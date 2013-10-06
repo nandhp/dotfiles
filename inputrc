@@ -1,0 +1,18 @@
+#?install ~/.inputrc
+#
+# inputrc - Customize behavior of GNU readline
+#
+
+# Alt-P and Alt-N to search history
+"\ep":          history-search-backward
+"\en":          history-search-forward
+
+# I never use this
+# "\C-d":	delete-char-or-list
+
+# I'm not sure what these are for
+"\e~":          history-search-forward
+"\e[3~":	delete-char
+"\e[4~":	end-of-line
+"\e[5C":	forward-word
+"\e[5D":	backward-word

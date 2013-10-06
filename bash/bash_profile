@@ -1,0 +1,19 @@
+#?install ~/.bash_profile -*-sh-*-
+#
+# bash_profile - Run for bash login shells and by xprofile
+#
+
+# Include bashrc if running as bash
+if [ -n "$BASH" ]; then
+    [ -e /etc/bash.bashrc  ] && . /etc/bash.bashrc
+    [ -e ~/.bashrc ] && . ~/.bashrc
+fi
+
+# Allow local customizations
+[ -e ~/.profile.local ] && . ~/.profile.local
+
+<? run_parts("*.bash_profile", "#") ?>
+
+# Environment variables for all shells
+export FTP_PASSIVE=1		# Because PORT doesn't work over NAT.
+# export CVS_RSH=ssh            # I mostly use anonymous CVS these days.

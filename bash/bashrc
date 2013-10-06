@@ -1,0 +1,23 @@
+#?install ~/.bashrc -*-sh-*-
+#
+# bashrc - Run for bash shells, mostly for interactive sessions only.
+#
+
+# On Debian, SYS_BASHRC defined, so only run /etc/bash.bashrc in login shells.
+# [ -r /etc/bash.bashrc ] && . /etc/bash.bashrc
+# Unfortunately, we can't check for SYS_BASHRC at runtime
+# RedHat EL6 does not seem to use SYS_BASHRC (based on the default bashrc file)
+[ -r /etc/bashrc ] && . /etc/bashrc
+# Load local customizations
+[ -e ~/.bashrc.local ] && . ~/.bashrc.local
+
+# Only customize interactive shells
+[ -z "$PS1" ] && return
+
+# OPERATING_SYSTEM=$(uname -o|tr '[:upper:]' '[:lower:]') # Where are we?
+[ -z "$USER" ] && USER=$(id -u -n)
+[ -z "$HOSTNAME" ] && HOSTNAME=$(hostname)
+# LOGNAME? USERNAME?
+
+<?
+run_parts("*.bashrc", "#")

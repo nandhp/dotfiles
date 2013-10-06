@@ -1,0 +1,7 @@
+#?install ~/.bash_logout -*-sh-*-
+#
+# bash_logout - This file is sourced when a login shell terminates.
+#
+
+# Clear the screen, except for remote (SSH) sessions
+[ -z "$SSH_CLIENT" ] && clear

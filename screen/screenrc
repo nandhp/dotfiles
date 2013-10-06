@@ -1,0 +1,36 @@
+#?install ~/.screenrc
+#
+# screenrc - GNU screen configuration
+#
+
+# Turn off the startup message
+startup_message off
+
+# Disable use of the alternate screen to allow scrolling in xterm
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Number screens starting from 1 to match the keyboard layout
+bind c screen 1
+bind ^c screen 1
+bind 0 select 10
+screen 1
+
+# Use Ctrl-O for the escape character
+escape ^oo
+# In nano Ctrl-O,Return is used to save
+bind ^m stuff ^o^m
+
+# Use Ctrl-Backslash for the escape character. The only thing it's used
+# for is killing processes, which is rare enough that the extra step to
+# invoke it (Ctrl-Backslash,Backslash) is probably actually a good idea.
+# (The risk is that I'll try to switch screens when screen isn't running
+# and zap some important process.)
+#escape ^\\
+
+# Screen is suid, so LD_LIBRARY_PATH gets unset. Use a wrapper script:
+#   PRESERVE_LD_LIBRARY_PATH="$LD_LIBRARY_PATH" exec /usr/bin/screen "$@"
+setenv LD_LIBRARY_PATH "$PRESERVE_LD_LIBRARY_PATH"
+unsetenv PRESERVE_LD_LIBRARY_PATH
+
+# Put the screen number in the titlebar (via RedHat)
+hardstatus string "[%n%?: %t%?] %h"

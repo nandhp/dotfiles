@@ -1,0 +1,9 @@
+#?install -m 0700 -d ~/.ssh
+#?install ~/.ssh/config
+#
+# ssh_config - SSH client configuration
+#
+
+<?
+run_parts("*.ssh_config", "#");
+

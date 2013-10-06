@@ -1,0 +1,13 @@
+#!/bin/bash
+#?install -m0755 ~/.local/bin/screen
+#
+# screen - Wrapper to pass LD_LIBRARY_PATH into screen sessions
+#
+
+# Find the real screen program (the first one that's not a shell script)
+for SCREEN in $(type -Pa screen) /bin/false; do
+    head -c2 $SCREEN|grep '#!' >/dev/null || break
+done
+
+PRESERVE_LD_LIBRARY_PATH="$LD_LIBRARY_PATH" exec $SCREEN "$@"
+
