@@ -140,8 +140,8 @@ set smarthome
 ## Use smooth scrolling as the default.
 # set smooth
 
-## Enable soft line wrapping (AKA full line display).
-set softwrap
+## Enable soft line wrapping (AKA full line display). (nano >= 2.1.11)
+<? print '# ' if $NANO_VERSION < 0x02010B ?>set softwrap
 
 ## Use this spelling checker instead of the internal one.  This option
 ## does not properly have a default value.
