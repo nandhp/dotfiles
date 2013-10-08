@@ -14,7 +14,7 @@ use strict;
 my $COMMENTS = "#;!%'";
 my $BASE = File::Spec->rel2abs(File::Spec->curdir());
 my $LIBDIR = File::Spec->rel2abs('lib');
-my $QUPP = File::Spec->rel2abs('../qupp.pl', $BASE);
+my $QUPP = File::Spec->rel2abs('qupp.pl', $LIBDIR);
 my $BUILD = File::Spec->rel2abs('.build', $BASE);
 my $INSTALLFILE = File::Spec->rel2abs('.install', $BASE);
 my $HOME = $ENV{HOME};
@@ -44,7 +44,7 @@ foreach ( @ARGV ? @ARGV : qw(help) ) {
         print STDERR "OK, installation complete\n";
     }
     else {
-        die "Usage: $APP <build|diff|install>\n";
+        die "Usage: $APP <build|diff|noact|install>\n";
     }
 }
 
