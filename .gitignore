@@ -2,3 +2,7 @@
 .install
 private
 local.*
+future
+*FUTURE*
+*.old
+junk
