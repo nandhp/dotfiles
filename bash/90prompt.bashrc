@@ -3,10 +3,12 @@
 # prompt.bashrc - Prompt and Title
 #
 
+# http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 if [ "$USER" = root ]; then
     _COLOR=31                   # Red for root shells
 elif [ -n "$SSH_CLIENT" ]; then
-    _COLOR=33                   # Yellow for remote shells
+    _COLOR=35                   # Magenta for remote shells
+    # Yellow (33) doesn't work well on a white background
 else
     _COLOR=32                   # Green for local shells
 fi
