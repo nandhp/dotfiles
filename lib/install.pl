@@ -2,6 +2,8 @@
 #
 # install.pl - Compile and install dotfiles
 #
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# License: Simplified (2-clause) BSD, see COPYING.BSD
 
 use File::Find;
 use File::Spec;
@@ -16,7 +18,7 @@ my $BASE = File::Spec->rel2abs(File::Spec->curdir());
 my $LIBDIR = File::Spec->rel2abs('lib');
 my $QUPP = File::Spec->rel2abs('qupp.pl', $LIBDIR);
 my $BUILD = File::Spec->rel2abs('.build', $BASE);
-my $INSTALLFILE = File::Spec->rel2abs('.install', $BASE);
+my $INSTALLFILE = File::Spec->rel2abs('.install', $BUILD);
 my $HOME = $ENV{HOME};
 
 die "$HOME does not exist" unless -d $HOME;

@@ -1,3 +1,9 @@
+#
+# dotfileutils - Utility functions for dotfile preprocessing
+#
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# License: Simplified (2-clause) BSD, see COPYING.BSD
+
 package dotfileutils;
 
 BEGIN{ Qupp->import }

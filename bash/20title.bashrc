@@ -3,6 +3,9 @@
 # title.bashrc - Title command for setting the titlebar
 #
 
+# title: Set the window title, manually and/or automatically.
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# License: Simplified (2-clause) BSD, see COPYING.BSD
 title() {
     # Handle command-line flags
     local OPT_AUTO=0 FLAG='?' OPTIND=1

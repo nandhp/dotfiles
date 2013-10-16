@@ -3,7 +3,12 @@
 # qupp - QUPP: Untitled Perl Preprocessor
 # Copyright (C) 2013 nandhp <nandhp@gmail.com>
 #
-#    FIXME: License
+# This program is free software; you can redistribute it and/or modify
+# it under the same terms as Perl 5.18.1.
+#
+# This program is distributed in the hope that it will be useful, but
+# without any warranty; without even the implied warranty of
+# merchantability or fitness for a particular purpose.
 #
 
 =head1 NAME
@@ -302,7 +307,12 @@ nandhp <nandhp@gmail.com>
 
 Copyright (C) 2013 nandhp <nandhp@gmail.com>
 
-FIXME: License
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl 5.18.1.
+
+This program is distributed in the hope that it will be useful, but
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
 
 =head1 SEE ALSO
 
