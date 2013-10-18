@@ -17,7 +17,7 @@
 ## Use auto-indentation.
 # set autoindent
 
-# Backup files to filename~.
+## Backup files to filename~.
 set backup
 
 ## The directory to put unique backup files in.

@@ -27,7 +27,8 @@ case "$TERM" in
             trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a "$BASH_COMMAND - '"$_TITLE"'"' DEBUG
             unset _TITLE
         fi
-        ;&                      # bashism
+        PS1="\[\033[01;${_COLOR}m\]$_USER\h\[\033[01;34m\] \w\$\[\033[00m\] "
+        ;;
     vt100*|linux*)              # Color only
         PS1="\[\033[01;${_COLOR}m\]$_USER\h\[\033[01;34m\] \w\$\[\033[00m\] "
 	;;
@@ -37,4 +38,4 @@ case "$TERM" in
 esac
 # This should be the last thing in the bashrc,
 # since it will enable commands in the titlebar
-unset _COLOR _USER _NO_CMD_TITLEBAR
+unset _COLOR _USER

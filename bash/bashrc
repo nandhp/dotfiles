@@ -19,5 +19,6 @@
 [ -z "$HOSTNAME" ] && HOSTNAME=$(hostname)
 # LOGNAME? USERNAME?
 
-<?
-run_parts("*.bashrc", "#")
+<? run_parts("*.bashrc", "#") ?>
+
+[[ -z "$_RUNNING_BASH_PROFILE" ]] && unset _NO_CMD_TITLEBAR

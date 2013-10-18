@@ -5,8 +5,10 @@
 
 # Include bashrc if running as bash
 if [ -n "$BASH" ]; then
+    _RUNNING_BASH_PROFILE=1
     [ -e /etc/bash.bashrc  ] && . /etc/bash.bashrc
     [ -e ~/.bashrc ] && . ~/.bashrc
+    unset _RUNNING_BASH_PROFILE
 fi
 
 # Allow local customizations
@@ -17,3 +19,4 @@ fi
 # Environment variables for all shells
 export FTP_PASSIVE=1		# Because PORT doesn't work over NAT.
 # export CVS_RSH=ssh            # I mostly use anonymous CVS these days.
+unset _NO_CMD_TITLEBAR
