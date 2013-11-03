@@ -24,7 +24,7 @@ case "$TERM" in
             PROMPT_COMMAND='title -a "'"$_TITLE"'"'
             # Current command in titlebar.
             _NO_CMD_TITLEBAR=1
-            trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a "$BASH_COMMAND - '"$_TITLE"'"' DEBUG
+            trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "$BASH_COMMAND - '"$_TITLE"'"' DEBUG
             unset _TITLE
         fi
         PS1="\[\033[01;${_COLOR}m\]$_USER\h\[\033[01;34m\] \w\$\[\033[00m\] "
