@@ -112,7 +112,8 @@ programs:								      \
   GL: 				molecule -root				    \n\
 -				rotzoomer -root				    \n\
 				speedmine -root				    \n\
-  GL: 				starwars -root -font '-*-helvetica-*-r-*-*-34-*' \n\
+  GL: 				starwars -root -font			      \
+				  '-*-helvetica-*-r-*-*-34-*'		    \n\
   GL: 				stonerview -root			    \n\
 -				vermiculate -root			    \n\
 -				whirlwindwarp -root			    \n\
@@ -209,6 +210,10 @@ programs:								      \
   GL: 				companioncube -root			    \n\
   GL: 				hilbert -root				    \n\
 - GL: 				tronbit -root				    \n\
+				hexadrop -root				    \n\
+  GL: 				kaleidocycle -root			    \n\
+- GL: 				quasicrystal -root			    \n\
+- GL: 				unknownpleasures -root			    \n\
 -				unicode -root				    \n\
 
 
