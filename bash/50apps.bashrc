@@ -20,8 +20,12 @@ export VISUAL=nano
 export BROWSER=firefox
 
 # Configure ls
-eval "$(dircolors -b)"          # Full color support
-alias ls='ls -lh --color=auto --dereference-command-line-symlink-to-dir'
+[ -n "$(type -t dircolors)" ] && eval "$(dircolors -b)" # Full color support
+if ls --version >/dev/null 2>&1; then
+    alias ls='ls -lh --color=auto'
+else
+    alias ls='ls -lhG'          # For Mac OS X; won't work with NetBSD
+fi
 
 # A calculator
 if [ -n "$(type -t calc)" ]; then
@@ -32,7 +36,7 @@ fi
 
 alias +=pushd -=popd
 alias grep='grep --color=auto'	# show matches in colour
-alias open=xdg-open
+[ -n "$(type -t xdg-open)" ] && alias open=xdg-open
 
 # Misspellings
 alias xit=exit

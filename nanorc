@@ -207,7 +207,9 @@ bind ^Q verbatim main
 ## Include all available syntax highlighting files.
 ##
 <?
-    foreach ( </usr/share/nano/*.nanorc> ) {
+    my @nanorcs = </usr/share/nano/*.nanorc>;
+    print "# (None found)\n" unless @nanorcs;
+    foreach ( @nanorcs ) {
         warn "Found strangely named nanorc file: $_" if m/[^\/a-z.]/;
         print "include \"$_\"\n";
     }

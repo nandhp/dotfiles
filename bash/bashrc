@@ -14,7 +14,7 @@
 # Only customize interactive shells
 [ -z "$PS1" ] && return
 
-# OPERATING_SYSTEM=$(uname -o|tr '[:upper:]' '[:lower:]') # Where are we?
+# OPERATING_SYSTEM=$(uname -s)
 [ -z "$USER" ] && USER=$(id -u -n)
 [ -z "$HOSTNAME" ] && HOSTNAME=$(hostname)
 # LOGNAME? USERNAME?

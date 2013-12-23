@@ -20,11 +20,16 @@ case "$TERM" in
     xterm*|rxvt*|cygwin*|screen*) # Color and title bar available
         # Bashisms are okay in PROMPT_COMMAND, as it is a bashism itself.
         if [ -n $(type -t title) ]; then
-            _TITLE='$USER@${HOSTNAME%%.*}: ${PWD/#$HOME/~}'
-            PROMPT_COMMAND='title -a "'"$_TITLE"'"'
-            # Current command in titlebar.
-            _NO_CMD_TITLEBAR=1
-            trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "$BASH_COMMAND - '"$_TITLE"'"' DEBUG
+            _TITLE='$USER@${HOSTNAME%%.*}'
+            # The Mac OS X Terminal has special features for the cwd
+            # and running command; don't replace them.
+            if ! type -t update_terminal_cwd >/dev/null 2>&1; then
+                _TITLE="$_TITLE"': ${PWD/#$HOME/~}'
+                # Current command in titlebar.
+                _NO_CMD_TITLEBAR=1
+                trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "update_terminal_cwd"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "$BASH_COMMAND - '"$_TITLE"'"' DEBUG
+            fi
+            PROMPT_COMMAND='title -a "'"$_TITLE"'"; '"$PROMPT_COMMAND"
             unset _TITLE
         fi
         PS1="\[\033[01;${_COLOR}m\]$_USER\h\[\033[01;34m\] \w\$\[\033[00m\] "

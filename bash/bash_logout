@@ -3,5 +3,6 @@
 # bash_logout - This file is sourced when a login shell terminates.
 #
 
-# Clear the screen, except for remote (SSH) sessions
-[ -z "$SSH_CLIENT" ] && clear
+# Clear the screen, except for remote (SSH) sessions and local
+# Terminal windows
+[ -z "$SSH_CLIENT" ] && [ -z "$TERM_PROGRAM" ] && clear
