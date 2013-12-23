@@ -214,6 +214,7 @@ programs:								      \
   GL: 				kaleidocycle -root			    \n\
 - GL: 				quasicrystal -root			    \n\
 - GL: 				unknownpleasures -root			    \n\
+- GL: 				geodesic -root				    \n\
 -				unicode -root				    \n\
 
 
