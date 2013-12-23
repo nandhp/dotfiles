@@ -109,7 +109,7 @@ sub build {
                         redo;
                     }
                 }
-                splice(@command, 1, 0, '-b');
+                splice(@command, 1, 0, '-m0644', '-b');
                 splice(@command, @command-1, 0, '--', $outfile);
                 push @diffs, ['f', $command[-1], $outfile];
                 push @files, \@command;
