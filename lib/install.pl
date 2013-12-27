@@ -7,7 +7,6 @@
 
 use File::Find;
 use File::Spec;
-use File::Basename;
 use Text::ParseWords;
 use Data::Dumper;
 use warnings;
@@ -60,6 +59,13 @@ sub build {
         my $origfile = File::Spec->abs2rel($path, $BASE);
         # Determine if we should process the file
         return unless -f $path;
+        if ( $origfile =~ /(.*)(^|\/)\.install$/ and $1 !~ m/(^|\/)\./ ) {
+            push @dirs, ['sh', '-e', '-c',
+                         'cd "$(dirname "$1")"; ./"$(basename "$1")"', '-',
+                         $origfile];
+            push @diffs, ['i', $origfile];
+            return;
+        }
         return if $origfile =~ /(^|\/)\.|(\.pm|~)$/;
         open F, '<', $path or die "open $path: $!";
         my $line = <F>;
@@ -191,6 +197,9 @@ sub diff {
             else {
                 print "Create directory\n";
             }
+        }
+        elsif ( $type eq 'i' ) {
+            print "Run script to install data files\n";
         }
         else {
             die "Unknown diff type $type";
