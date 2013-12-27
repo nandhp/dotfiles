@@ -11,6 +11,7 @@ BEGIN{ Qupp->import }
 use Sys::Hostname;
 use File::Basename;
 use File::Spec;
+use File::Find;
 
 use warnings;
 use strict;
@@ -24,7 +25,9 @@ my @caller = caller();
 my $origfile = $caller[1];
 
 # Add subdirectories to the include path
-push @PATH, <*/>;
+# push @PATH, <*/>;
+find({wanted => sub { push @PATH, $_ if -d $_ and $_ !~ /\/\./ },
+      no_chdir => 1}, '.');
 
 # Include all files matching $glob in the include path.
 # For example, run_parts('*.bashrc');

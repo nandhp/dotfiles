@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+#
+# exec - Map keysyms to arbitrary commands (like urxvt, to open a new window)
+#
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# License: Simplified (2-clause) BSD, see COPYING.BSD
+
+# Grab the shell's PID so we can look up its current directory in
+# /proc whenever we start a process.
+sub on_child_start {
+    my ($self, $pid) = @_;
+    $self->{child_pid} = $pid;
+}
+
+sub on_user_command {
+    my ($self, $cmd) = @_;
+    if ( $cmd =~ /exec(-window)?(?:\:(.*)|$)/ ) {
+        my ($usewnd, $cmd) = ($1, $2);
+        my $cwd = $ENV{HOME};
+        if ( $self->{child_pid} ) {
+            my $rl = readlink "/proc/$self->{child_pid}/cwd";
+            $cwd = $rl if $rl;
+        }
+        if ( $usewnd ) {
+            # http://lists.schmorp.de/pipermail/rxvt-unicode/2012q3/001610.html
+            my @args = (-cd => $cwd);
+            push @args, -e => $cmd if $cmd;
+            new urxvt::term $self->env, $urxvt::RXVTNAME, @args;
+        }
+        else {
+            $self->exec_async('sh', '-c', 'cd "$1";exec "$2"', '-', $cwd, $cmd)
+        }
+    }
+}

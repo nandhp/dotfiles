@@ -1,0 +1,4 @@
+#!/bin/sh -ex
+mkdir -p ~/.urxvt/ext
+chmod 0755 ~/.urxvt ~/.urxvt/ext
+rsync --exclude '*~' --exclude '.*' -ia --chmod=ug+rX,go-w . ~/.urxvt/ext

@@ -1,0 +1,15 @@
+!?install ~/.Xresources
+!
+! Xresources - Configuration for X11 applications
+!
+! Changes this file will not be recognized until activated with xrdb -merge
+
+! Without this, xterm is totally broken
+xterm.metaSendsEscape: true
+
+! Some other useful settings
+xclock.update: 1
+
+! Include parts
+<?
+run_parts("*.Xresources", "!");

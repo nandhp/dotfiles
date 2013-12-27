@@ -1,0 +1,200 @@
+#!/usr/bin/perl
+#
+# dragdrop - Allow urxvt to be a drop destination for drag and drop.
+#
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# License: Simplified (2-clause) BSD, see COPYING.BSD
+#
+# If you want to add support for additional MIME types or adjust the
+# conversion to plain text, see the choose_type and transform
+# functions below.
+#
+
+use warnings;
+use strict;
+
+# XSendEvent and XConvertSelection are not available via urxvtperl.
+# XChangeProperty does not work well/properly.
+use X11::Protocol;
+# If you don't have or want X11::Protocol, XChangeProperty can be
+# replaced by xprop(1) and it may be possible to replace XSendEvent
+# with xse(1) from the X11R5 distribution. No idea how to replace
+# XConvertSelection; xsel(1) and xclip(1) won't do the job.
+# SelectionNotify would be nice, too.
+
+# Xdnd changelog:
+# 5: Extra feedback in XdndFinished
+# 4: Charset in MIME type; XdndProxy
+# 3: Move XdndAware out of subwindows
+# 2: Actions (XdndStatus); XdndFinished
+# 1: Timestamp (XdndPosition and XdndDrop)
+my $XdndVersionMax = 5;
+
+# FIXME: Cache atoms to reduce roundtrips
+# FIXME: Test with daemon using multiple X displays
+# FIXME: Test: big-endian; X client and server of different endianness; 32-bit
+# FIXME: Get bugs fixed to eliminate X11::Protocol dependency
+
+sub XdndEvent {
+    # Send an XdndSomething message to the Xdnd source window
+    my ($self, $event, $l1, $l2, $l3, $l4) = @_;
+    return unless $self->{XdndSource} and $self->{XdndDisplay};
+    # typedef struct {
+    #   int type;             /* ClientMessage */
+    #   unsigned long serial; /* # of last request processed by server */
+    #   Bool send_event;      /* true if this came from a SendEvent request */
+    #   Display *display;     /* Display the event was read from */
+    #   Window window;
+    #   Atom message_type;
+    #   int format;
+    #   union {
+    #     char b[20];
+    #     short s[10];
+    #     long l[5];
+    #   } data;
+    # } XClientMessageEvent;
+    my $data = pack('LLLLL', $self->parent, $l1, $l2, $l3, $l4);
+    my $msg = $self->{XdndDisplay}->pack_event(
+        name => 'ClientMessage',
+        # serial, send_event, display
+        window => $self->{XdndSource},
+        type => $self->XInternAtom($event),
+        format => 32, data => $data,
+    );
+    $self->{XdndDisplay}->req('SendEvent', $self->{XdndSource}, 0, 0, $msg);
+    $self->{XdndDisplay}->req('GetScreenSaver'); # Dummy event
+}
+
+# FIXME: implement type preferences -- prefer some types over others
+my %validtypes = ();
+$validtypes{$_} = 1 foreach qw(text/plain text/plain;charset=utf-8 STRING TEXT UTF8_STRING text/uri-list);
+sub choose_type {
+    my $self = shift;
+    foreach my $typeid ( @_ ) {
+        next unless $typeid;
+        my $typename = $self->XGetAtomName($typeid);
+        #print "Trying $typeid $typename\n"; 
+        return $typename if exists($validtypes{$typename}) and
+            $validtypes{$typename};
+    }
+    return '';
+}
+
+sub transform {
+    my ($type, $octets) = @_;
+    if ( $type =~ m/[-_]ur[il]$|(^|\/)ur[il][-_]/ ) {
+        # For URLs or URL lists (newline separated), canonicalize
+        # whitespace and append a space for repeated drags.
+        $octets =~ s/\s+|(?<!\s)$/ /g;
+    }
+    return $octets;
+}
+
+sub on_client_message {
+    my ($self, $event) = @_;
+    my $wid = $self->parent;
+    my $type = $self->XGetAtomName($event->{message_type});
+    if ( 0 and $type ne 'XdndPosition' ) {
+        print "Got $type on $wid\n";
+        print "  $_ => $event->{$_}\n" foreach keys %$event;
+    }
+    if ( $type eq 'XdndEnter' ) {
+        return if $self->{XdndSource};
+        my $sourceVersion = ($event->{l1}&0xff000000)>>(8*3);
+        if ( $sourceVersion > $XdndVersionMax ) {
+            warn "Xdnd version error: $sourceVersion > $XdndVersionMax";
+            return;
+        }
+        $self->{XdndSource} = $event->{l0};
+        my $typeoverflow = $event->{l1} & 1;
+        my @types = ($event->{l2}, $event->{l3}, $event->{l4});
+        if ( $typeoverflow ) {
+            my $prop = $self->XGetWindowProperty
+                ($self->{XdndSource}, $self->XInternAtom('XdndTypeList'));
+            my $wordsize = length(pack('L', 0));
+            for ( my $i = 0; $i+$wordsize <= length($prop); $i+= $wordsize ) {
+                my $typeid = unpack('L', substr($prop, $i, $wordsize));
+                # FIXME: Atoms have a zero word between each list
+                # element? (are they 64-bit on amd64?)
+                push @types, $typeid;
+            }
+        }
+        #print "Supported formats ($typeoverflow):\n";
+        $self->{XdndType} = $self->choose_type(@types);
+        #print "Type is '$self->{XdndType}'\n";
+        return;
+    }
+    return if $event->{l0} ne $self->{XdndSource};
+    if ( $type eq 'XdndPosition' ) {
+        # Analyze the available types
+        # Report if drop will be accepted
+        $self->XdndEvent('XdndStatus', $self->{XdndType} ? 0b01 : 0b00,
+                         0, 0xffffffff,
+                         $self->XInternAtom('XdndActionCopy'));
+    }
+    elsif ( $type eq 'XdndDrop' ) {
+        my $ok = $self->{XdndType} ? 0b1 : 0b0;
+        if ( $ok ) {
+            my $nameatom = $self->XInternAtom('XdndSelection');
+            my $typeatom = $self->XInternAtom($self->{XdndType});
+
+            # Copy the selection to a window property
+            $self->{XdndDisplay}->req
+                ('ConvertSelection', $nameatom, $typeatom,
+                 $nameatom, $wid, $event->{l2});
+            $self->{XdndDisplay}->req('GetScreenSaver'); # Dummy event
+
+            # Wait for the data to show up in the window property (up to 1sec)
+            $ok = 0;
+            for ( my $i = 0; $i < 100; $i++ ) {
+                my ($type, $format, $octets) = $self->XGetWindowProperty
+                    ($wid, $nameatom);
+                if ( $type && ($type == $typeatom) ) {
+                    #print "Got a drop event of type $self->{XdndType}!\n";
+                    $self->tt_paste(transform($self->{XdndType}, $octets));
+                    $self->XDeleteProperty($wid, $nameatom);
+                    $ok = 1;
+                    last;
+                }
+                else { select(undef, undef, undef, 0.01) }
+                #system('xprop', '-id', $wid, 'XdndSelection');
+                #print('Got data of type ',
+                #      $type ? "$type=".$self->XGetAtomName($type) : '(undef)',
+                #      " instead of $self->{XdndType}\n");
+            }
+        }
+        if ( !$ok ) { print "XdndDrop not ok\n" }
+        # Send XdndFinished
+        $self->XdndEvent('XdndFinished', $ok,
+                         $self->XInternAtom('XdndActionCopy'), 0, 0);
+    }
+    if ( $type eq 'XdndLeave' or $type eq 'XdndDrop' ) {
+        # Drop event cancelled or completed
+        $self->{XdndSource} = 0;
+        $self->{XdndType} = '';
+    }
+}
+
+sub on_start {
+    my ($self) = @_;
+    my $wid = $self->parent;
+    # State variables
+    $self->{XdndDisplay} = X11::Protocol->new($self->display_id);
+    $self->{XdndSource} = 0;
+    $self->{XdndType} = '';
+
+    # Advertise Xdnd support
+    ## Doesn't work (only seems to support string properties)
+    # my $rc = $self->XChangeProperty($wid, $self->XInternAtom('XdndAware'),
+    #                                 $self->XInternAtom('ATOM'),
+    #                                 32, $XdndVersionMax);
+    ## Let's avoid extra processes since we need X11::Protocol anyway
+    # system('xprop', '-id', $wid, '-f', 'XdndAware', '32x',
+    #        '-set', 'XdndAware', $XdndVersionMax) and
+    #            warn "Can't enable XdndAware: $rc";
+    $self->{XdndDisplay}->req
+        ('ChangeProperty', $wid, $self->XInternAtom('XdndAware'),
+         $self->XInternAtom('ATOM'), 32, 'Replace', pack('L', $XdndVersionMax));
+    $self->{XdndDisplay}->req('GetScreenSaver'); # Dummy event
+    #printf "Enabled XdndAware on %08x\n", $wid;
+}

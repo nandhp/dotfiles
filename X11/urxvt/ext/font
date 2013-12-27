@@ -1,0 +1,148 @@
+#!/usr/bin/env perl
+#
+# font - urxvt plugin for font resizing at runtime. (e.g. with Ctrl-[-+0])
+#
+# Based on 'font' by Noah K. Tilton <lists@tilton.co>.
+#   https://github.com/noah/urxvt-font
+# As modified by https://github.com/thomasf.
+#   https://github.com/thomasf/dotfiles-thomasf-xmonad/
+#
+# Copyright (c) 2013 nandhp <nandhp@gmail.com>
+# Copyright (c) 2012 by Noah K. Tilton.
+# 
+# Rewritten by nandhp to add two new features: reset to default size
+# and the fontSizes resource, which generalizes the old Monaco hack.
+#
+# NOTE: https://github.com/majutsushi/urxvt-font-size has some nice
+# modifications, including support for non-xft fonts like fixed.
+# I should consider merging some of my changes there.
+#
+# What it does:
+#
+# 1) Emits escape sequences to change the font size in the running console;
+# 2) Some versions of this extension persist the font size to ~/.Xresources.
+#
+# Note: The regexes will only work on xft font specifications.
+#
+# For this script to work, ~/.Xresources (or ~/.Xdefaults, if you
+# prefer) must contain a font size specification; for example
+#
+#       urxvt*font: xft:Terminus:size=9
+#
+# and should probably contain specifications for
+#
+#       urxvt*boldFont
+#       urxvt*boldColors: on
+#
+# and may optionally contain a specification for
+#
+#       urxvt*fontSizes: 9,10,13,16,20,23
+#
+# References: man 3 urxvtperl
+# Debugging:  urxvt --perl-lib ~/.urxvt -pe font
+
+use warnings;
+use strict;
+
+# FIXME: avoid global variables?
+my %originals = ();
+my @sizes = ();
+
+sub on_start {
+    my ($self) = @_;
+    # Load user's font size list, if configured
+    my $resource = undef;
+    $resource = $self->{term}->x_resource('fontSizes');
+    @sizes = $resource ? split(',', $resource) : ();
+}
+
+sub _resize_xft_string {
+    my ($self, $key, $delta) = @_;
+
+    # Make sure resource is defined; save original value for resetting.
+    my $resource = $self->{term}->resource($key);
+    return '' unless $resource;
+    $originals{$key} = $resource unless $originals{$key};
+    return $originals{$key} unless $delta; # delta=0 means reset
+
+    # Parse the value
+    my @pieces = split /:/, $resource;
+    my @resized = ();
+ 
+    foreach my $piece (@pieces) {
+        # matching string
+        if ( $piece =~ /size=(\d*)/ ) {
+            my $old_size = $1;
+            my $new_size = $old_size;
+
+            # If the user has provided a size list, use it.
+            if ( @sizes ) {
+                my ($lower, $upper) = (-1, @sizes);
+                for ( my $i = 0; $i < @sizes; $i++ ) {
+                    if ( $sizes[$i] == $old_size ) {
+                        $lower = $i-1;
+                        $upper = $i+1;
+                        last;
+                    }
+                    elsif ( $sizes[$i] < $old_size ) { $lower = $i }
+                    else { $upper = $i; last }
+                }
+                my $nextpos = ($delta < 0) ? $lower : $upper;
+                $nextpos = 0 if $nextpos < 0;
+                $nextpos = $#sizes if $nextpos > $#sizes;
+                $new_size = $sizes[$nextpos];
+            }
+            else {
+                $new_size += $delta;
+            }
+            $piece =~ s/size=$old_size/size=$new_size/;
+        }
+        push @resized, $piece;
+    }
+    return join (":", @resized);
+}
+
+sub change_size_complicated {
+    my ($self, $delta) = @_;
+
+    my @fonts = qw(font imFont boldFont italicFont boldItalicFont);
+    my %fonts = ();
+
+    # Get xft strings with new font size
+    foreach ( @fonts ) {
+        my $new = $self->_resize_xft_string($_, $delta);
+        $fonts{$_} = $new if $new;
+    }
+
+    # Update internal urxvt resource hash
+    #     This is necessary or else the next resize won't have an updated
+    #     value. "font" key is updated by urxvt when cmd_parse is called,
+    #     but boldFont is *not*, at least with the escape sequences I'm
+    #     emitting.
+    $self->{term}->resource($_, $fonts{$_}) foreach keys %fonts;
+
+    # Emit escape sequence to change fonts in rxvt runtime
+    $self->{term}->cmd_parse("\e]710;" . $fonts{font} . "\007");
+    # FIXME: Use 711, 712, 713 for bold, italic, and boldItalic.
+    #print "Using $fonts{font}\n";
+
+    # NOTE: Original version also re-saves the font settings to ~/.Xresources.
+    # That's not a feature I need though.
+}
+
+sub change_size {
+    my ($self, $delta) = @_;
+    my $font = $self->_resize_xft_string('font', $delta);
+    $self->{term}->cmd_parse("\e]710;" . $font . "\007") if $font;
+}
+
+sub on_user_command {
+  my ($self, $cmd) = @_;
+
+  if ($cmd =~ /font:(..)crement/) {  # {in, de, ex}
+      $self->change_size(($1 eq 'in') ? +1 : -1);
+  }
+  elsif ( $cmd =~ /font:reset/ ) {
+      $self->change_size(0);
+  }
+}

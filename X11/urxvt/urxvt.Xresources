@@ -1,0 +1,45 @@
+! -*-conf-xdefaults-*-
+!
+! urxvt.Xresources - urxvt configuration
+!
+
+! General appearance and behavior
+URxvt.foreground: white
+URxvt.background: black
+URxvt.cursorColor: green
+URxvt.font: xft:Terminus:size=9
+URxvt.fontSizes: 9,10,13,16,20,23 ! Used by font plugin
+URxvt.scrollTtyOutput: false
+URxvt.scrollWithBuffer: true
+URxvt.scrollTtyKeypress: true
+URxvt.iconFile: /usr/share/icons/Tango/scalable/apps/terminal.svg
+URxvt.cutchars: "$!\\ `\"'()*;<>[]^{|}"
+URxvt.saveLines: 50000
+
+! Scrollbar customization
+URxvt.scrollBar_right: true
+URxvt.scrollstyle: plain
+URxvt.scrollColor: gray40
+! URxvt.scrollColor: #edeceb
+! URxvt.scrollstyle: rxvt
+! URxvt.troughColor: gray10
+URxvt.borderColor: black
+URxvt.internalBorder: 1
+
+! Plugins
+URxvt.perl-ext-common: muennich-urxvt-perls/clipboard,muennich-urxvt-perls/url-select,vtwheel,font,exec,dragdrop
+URxvt.url-select.launcher: xdg-open
+! URxvt.url-select.underline: true
+! FIXME: underline on hover? on_motion_notify
+URxvt.keysym.C-C: perl:clipboard:copy
+URxvt.keysym.C-V: perl:clipboard:paste
+URxvt.keysym.C-plus: perl:font:increment
+URxvt.keysym.C-equal: perl:font:increment
+URxvt.keysym.C-minus: perl:font:decrement
+URxvt.keysym.C-0: perl:font:reset
+! Create a new window on Ctrl-Shift-N (or perl:exec-window for one process)
+URxvt.keysym.C-N: perl:exec:urxvt
+
+! Disable Ctrl-Shift for arbitrary unicode (it would be nice to have
+! Ctrl+Shift+U do this...).
+URxvt.iso14755: false
