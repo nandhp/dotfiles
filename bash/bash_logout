@@ -4,5 +4,8 @@
 #
 
 # Clear the screen, except for remote (SSH) sessions and local
-# Terminal windows
-[ -z "$SSH_CLIENT" ] && [ -z "$TERM_PROGRAM" ] && clear
+# Terminal windows.
+if [ -z "$SSH_CLIENT" ] && [ -z "$TERM_PROGRAM" ]; then
+    # Prefer clear_console because it clears the VT scrollback as well.
+    clear_console 2>/dev/null || clear
+fi
