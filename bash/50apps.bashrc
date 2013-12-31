@@ -49,6 +49,9 @@ elif [ -n "$(type -t perl-rename)" ]; then
     alias rename=perl-rename
 fi
 
+alias hexcat='xxd -a'
+alias mtr='mtr --curses'
+
 # Popular examples:
 # alias rm='rm -i'		# interactive delete
 # alias cp='cp -i'		# interactive copy
