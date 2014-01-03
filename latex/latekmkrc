@@ -1,0 +1,9 @@
+#? install .latexmkrc
+#
+# latexmkrc - Configuration for latexmk
+#
+
+$pdf_mode = 1;
+$preview_continuous_mode = 1;
+$pdf_update_method = 0; # viewer automatically updates
+$pdf_previewer = "start xdg-open %S"; # use default PDF viewer
