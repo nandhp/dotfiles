@@ -3,6 +3,8 @@
 # bash_logout - This file is sourced when a login shell terminates.
 #
 
+_NO_CMD_TITLEBAR=1
+
 # Clear the screen, except for remote (SSH) sessions and local
 # Terminal windows.
 if [ -z "$SSH_CLIENT" ] && [ -z "$TERM_PROGRAM" ]; then
