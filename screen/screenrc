@@ -9,12 +9,6 @@ startup_message off
 # Disable use of the alternate screen to allow scrolling in xterm
 termcapinfo xterm|xterms|xs|rxvt ti@:te@
 
-# Number screens starting from 1 to match the keyboard layout
-bind c screen 1
-bind ^c screen 1
-bind 0 select 10
-screen 1
-
 # Use Ctrl-O for the escape character
 escape ^oo
 # In nano Ctrl-O,Return is used to save
@@ -34,3 +28,9 @@ unsetenv PRESERVE_LD_LIBRARY_PATH
 
 # Put the screen number in the titlebar (via RedHat)
 hardstatus string "[%n%?: %t%?] %h"
+
+# Number screens starting from 1 to match the keyboard layout
+bind c screen 1
+bind ^c screen 1
+bind 0 select 10
+screen 1
