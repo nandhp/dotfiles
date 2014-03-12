@@ -10,3 +10,6 @@ set confirm off
 set history filename ~/.gdb_history
 set history save
 set history size 1000
+
+# Needed for some systems with newer gcc
+add-auto-load-safe-path /opt/apps
