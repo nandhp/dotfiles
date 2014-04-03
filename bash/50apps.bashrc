@@ -41,7 +41,7 @@ if [ -n "$(type -t xdg-open)" ]; then
         local x
         [ "$#" = 0 ] && echo 'Usage: open <file> [...]' >&2 && return 2
         for x in "$@"; do
-            xdg-open $x
+            xdg-open "$x"
         done
     }
 fi
