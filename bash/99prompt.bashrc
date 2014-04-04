@@ -6,7 +6,7 @@
 # http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 if [ "$USER" = root ]; then
     _COLOR=31                   # Red for root shells
-elif [ -n "$SSH_CLIENT" ]; then
+elif [ -n "$SSH_CONNECTION" ]; then
     _COLOR=35                   # Magenta for remote shells
     # Yellow (33) doesn't work well on a white background
 else
