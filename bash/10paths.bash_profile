@@ -40,3 +40,6 @@ done
 
 # Cleanup
 unset x _pathmunge
+
+# Export new environment variables
+export PATH MANPATH INFOPATH
