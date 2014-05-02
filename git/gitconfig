@@ -13,6 +13,6 @@
 	showuntrackedfiles = no
 [alias]
 	uncommit = reset --soft HEAD^
-	whoami = !git var GIT_COMMITTER_IDENT|cut -d' ' -f 1-2
+	whoami = !git var GIT_COMMITTER_IDENT | sed 's/[-0-9 ]*$//'
 [push]
 	default = simple
