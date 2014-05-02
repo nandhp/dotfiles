@@ -1,0 +1,18 @@
+#?install ~/.gitconfig
+#
+# gitconfig - Configuration for git
+#
+
+<? run_parts("*.gitconfig"); ?>
+
+[color]
+	ui = auto
+[core]
+	excludesfile = ~/.config/git/ignore
+[status]
+	showuntrackedfiles = no
+[alias]
+	uncommit = reset --soft HEAD^
+	whoami = !git var GIT_COMMITTER_IDENT|cut -d' ' -f 1-2
+[push]
+	default = simple

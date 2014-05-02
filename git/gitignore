@@ -1,0 +1,12 @@
+#?install -d ~/.config/git
+#?install ~/.config/git/ignore
+#
+# gitignore - Global list of files for git to ignore
+#
+
+*~
+.\#*
+\#*\#
+*.pyc
+build-stamp
+.DS_Store
