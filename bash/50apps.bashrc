@@ -51,7 +51,9 @@ alias xit=exit
 alias kilall=killall
 
 # Use Perl version of rename
-if [ -n "$(type -t prename)" ]; then
+if [ -n "$(type -t file-rename)" ]; then
+    alias rename=file-rename
+elif [ -n "$(type -t prename)" ]; then
     alias rename=prename
 elif [ -n "$(type -t perl-rename)" ]; then
     alias rename=perl-rename
