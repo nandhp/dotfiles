@@ -7,7 +7,7 @@
 startup_message off
 
 # Disable use of the alternate screen to allow scrolling in xterm
-termcapinfo xterm|xterms|xs|rxvt ti@:te@
+termcapinfo xterm|xterms|xs|rxvt|rxvt-unicode ti@:te@
 
 # Use Ctrl-O for the escape character
 escape ^oo
