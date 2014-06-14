@@ -5,3 +5,5 @@ future
 *FUTURE*
 *.old
 junk
+.svn
+SVN

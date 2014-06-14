@@ -1,0 +1,4 @@
+#!/bin/sh -ex
+mkdir -p ~/.emacs.d/lisp
+chmod 0755 ~/.emacs.d/lisp
+rsync --exclude '*~' --exclude '.*' -ia --chmod=ug+rX,go-w . ~/.emacs.d/lisp
