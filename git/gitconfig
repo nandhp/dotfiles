@@ -3,6 +3,13 @@
 # gitconfig - Configuration for git
 #
 
+<?
+    # Determine the installed version of Git.
+    `git --version 2>&1` =~ m/^ *git version (\d+)\.(\d+)\.(\d+)/i;
+    $GIT_VERSION = int($3)+(int($2)<< 8)+(int($1)<<16);
+?>
+# Generated for Git version <? printf("0x%06x", $GIT_VERSION) ?>.
+
 <? run_parts("*.gitconfig"); ?>
 
 [color]
@@ -15,4 +22,6 @@
 	uncommit = reset --soft HEAD^
 	whoami = !git var GIT_COMMITTER_IDENT | sed 's/[-0-9 ]*$//'
 [push]
-	default = simple
+	# Requires version 1.7.11
+	# http://git-core.googlecode.com/git/Documentation/RelNotes/1.7.11.txt
+	<? print "#" if $GIT_VERSION < 0x01070B ?>default = simple
