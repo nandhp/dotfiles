@@ -9,4 +9,4 @@
 \#*\#
 *.pyc
 build-stamp
-.DS_Store
+.*DS_Store
