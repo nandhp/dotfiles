@@ -24,3 +24,8 @@
 ;;(setq savehist-additional-variables     ; Also save searches
 ;;      '(search-ring regexp-search-ring))
 ;;(savehist-mode t)
+
+;; Set the current working directory to HOME if running on a window system.
+;; Needed in Emacs.app, which always defaults to /.
+(if (and (window-system) (getenv "HOME"))
+    (setq default-directory (concat (getenv "HOME") "/")))

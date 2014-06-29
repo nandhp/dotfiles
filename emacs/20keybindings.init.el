@@ -11,7 +11,7 @@
 ;; Make C-a and <home> toggle between the real and logical beginning
 ;; of the line. (Smart Home)
 ;; http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
-(defun smarter-move-beginning-of-line (arg)
+(defun-with-optional-shift-selection smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
 Move point to the first non-whitespace character on this line.
@@ -21,7 +21,7 @@ the beginning of the line.
 
 If ARG is not nil or 1, move forward ARG - 1 lines first.  If
 point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
+  (interactive "p")
   (setq arg (or arg 1))
 
   ;; Move lines first
