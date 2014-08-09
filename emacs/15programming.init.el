@@ -23,7 +23,9 @@
 
 ;; The tab support in Python mode is stupid
 (defun my-python-mode ()
-  (local-set-key (kbd "<backtab>") 'python-shift-left)
+  (local-set-key (kbd "<backtab>") (if (fboundp 'python-indent-shift-left)
+                                       'python-indent-shift-left
+                                       'python-shift-left))
   ;(setq indent-line-function 'python-indent-line-1)
 )
 (add-hook 'python-mode-hook 'my-python-mode)
