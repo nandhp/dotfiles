@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# X11/urxvt/etc/.install - Install urxvt terminfo files
+#
+
+set -e
+
+TEMPDIR=$(mktemp -d)
+ALTTEMP=$(mktemp -d)
+
+TERMINFO="$TEMPDIR" tic rxvt-unicode.terminfo
+for TERMFILE in $(cd "$TEMPDIR" && find . -type f); do
+    TERMFILE="${TERMFILE#./}"
+    TERMNAME="${TERMFILE##*/}"
+    TEMPFILE="$TEMPDIR/$TERMFILE"
+    OUTFILE=~/.terminfo/"$TERMFILE"
+    echo "$OUTFILE"
+
+    mv "$OUTFILE" "$OUTFILE"~
+
+    if infocmp "$TERMNAME" > "$ALTTEMP/terminfo.tmp" 2>/dev/null; then
+        SYSFILE=$(head -1 "$ALTTEMP/terminfo.tmp" | cut -d: -f2 | cut -c2-)
+        if [ -z "$SYSFILE" ] || ! [ -e "$SYSFILE" ]; then
+            echo "  Warning: existing terminfo has strange behavior"
+        elif cmp -s "$SYSFILE" "$TEMPFILE"; then
+            echo "  Matches existing terminfo."
+        else
+            echo "  Note: $TERMNAME does not match $SYSFILE"
+        fi
+    fi
+
+    mkdir -p $(dirname "$OUTFILE")
+    mv "$TEMPFILE" "$OUTFILE"
+    echo "  Installed"
+done
+rm -r "$TEMPDIR" "$ALTTEMP"
