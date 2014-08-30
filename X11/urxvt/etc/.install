@@ -16,7 +16,7 @@ for TERMFILE in $(cd "$TEMPDIR" && find . -type f); do
     OUTFILE=~/.terminfo/"$TERMFILE"
     echo "$OUTFILE"
 
-    mv "$OUTFILE" "$OUTFILE"~
+    [ -e "$OUTFILE" ] && mv "$OUTFILE" "$OUTFILE"~
 
     if infocmp "$TERMNAME" > "$ALTTEMP/terminfo.tmp" 2>/dev/null; then
         SYSFILE=$(head -1 "$ALTTEMP/terminfo.tmp" | cut -d: -f2 | cut -c2-)
