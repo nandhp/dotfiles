@@ -1,4 +1,26 @@
-#?install -d ~/.local/bin
+#!/bin/sh -ex
+#?run
 #
 # dirs - Create some directories
 #
+
+# Set up ~/.local/bin, ~/.local/{share/,}man
+install -d ~/.local/bin
+install -d ~/.local/share/man
+# Create legacy symlink from ~/.local/man (Used by Perl?)
+if ! [ -L ~/.local/man ]; then
+    if [ -e ~/.local/man ]; then
+        echo Warning: ~/.local/man exists, but is not a symlink >&2
+    else
+        ln -fs share/man ~/.local/man
+    fi
+fi
+
+# Create ~/.cache
+if ! [ -L ~/.cache ]; then
+    install -m0700 -d ~/.cache
+fi
+if ! [ -O ~/.cache ]; then
+    echo Error: ~/.cache is not owned by you >&2
+    exit 1
+fi
