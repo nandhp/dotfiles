@@ -21,7 +21,8 @@ my $INSTALLFILE = File::Spec->rel2abs('.install', $BUILD);
 my $HOME = $ENV{HOME};
 
 die "$HOME does not exist" unless -d $HOME;
-mkdir($BUILD) or die "mkdir $BUILD: $!" unless -d $BUILD;
+mkdir($BUILD, 0700) or die "mkdir $BUILD: $!" unless -d $BUILD;
+chmod(0700, $BUILD) or die "chmod $BUILD: $!";
 
 my $APP = $0;
 foreach ( @ARGV ? @ARGV : qw(help) ) {
@@ -60,6 +61,7 @@ sub build {
         # Determine if we should process the file
         return unless -f $path;
         if ( $origfile =~ /(.*)(^|\/)\.install$/ and $1 !~ m/(^|\/)\./ ) {
+            # FIXME: Replace with ?run, implemented below
             push @dirs, ['sh', '-e', '-c',
                          'cd "$(dirname "$1")"; ./"$(basename "$1")"', '-',
                          $origfile];
@@ -88,6 +90,10 @@ sub build {
             }
             my ($commentchar, $commandline) = ($1, $2);
             $commandline =~ s/-\*-.*-\*-//; # Emacs mode configuration
+            if ( $commandline =~ m/^\s*quiet/ ) {
+                $cmdno++;
+                next;
+            }
             if ( $cmdno == 0 ) {
                 my $now = localtime;
                 print OUT "$commentchar $_\n" foreach
@@ -128,12 +134,16 @@ sub build {
                 # Sometimes we need symlinks, too
                 my @newcmd = ('ln', '-f', '--');
                 my $ok = 0;
+                my $last = undef;
                 foreach ( @command[1..$#command] ) {
                     if ( m/^-s/ ) { $newcmd[1] .= 's'; next }
                     $ok=99 if m/^-/;
-                    push @newcmd, do_glob($_);
+                    push @newcmd, do_glob($_, undef);
+                    $last = do_glob($_);
                     $ok++;
                 }
+                defined($last) or $ok = 99;
+                $newcmd[-1] = $last;
                 $ok = 99 if $newcmd[1] ne '-fs';
                 die "$path: ln: Usage: ln -s <target> <linkname>; " .
                     "got @newcmd" unless $ok == 2;
@@ -141,6 +151,13 @@ sub build {
                     if -e $newcmd[-1] and !-l $newcmd[-1];
                 push @files, \@newcmd;
                 push @diffs, ['l', $newcmd[-1], $newcmd[-2]];
+            }
+            elsif ( $cmd eq 'run' ) {
+                chmod 0700, $outfile or die "chmod $outfile: $!";
+                push @dirs, ['sh', '-e', '-c',
+                             'cd "$(dirname "$1")"; "$2"', '-',
+                             $origfile, $outfile];
+                push @diffs, ['i', $outfile];
             }
             else {
                 warn "$path: $cmd not recognized.\n";
@@ -180,14 +197,14 @@ sub diff {
             }
         }
         elsif ( $type eq 'l' ) {
-            if ( !-e $data[0] ) {
-                print "Create symlink to $data[1]\n";
-            }
-            elsif ( -l $data[0] ) {
+            if ( -l $data[0] ) {
                 my $old = readlink $data[0];
                 if ( $old ne $data[1] ) {
                     print "Change symlink from $old to $data[1]\n";
                 }
+            }
+            elsif ( !-e $data[0] ) {
+                print "Create symlink to $data[1]\n";
             }
             else {
                 die "$data[1]: ln: Won't overwrite non-symlink $data[0]";
@@ -203,7 +220,7 @@ sub diff {
             }
         }
         elsif ( $type eq 'i' ) {
-            print "Run script to install data files\n";
+            print "Run script\n";
         }
         else {
             die "Unknown diff type $type";
@@ -222,7 +239,8 @@ sub install {
 }
 
 sub do_glob {
-    my ($file) = @_;
+    my ($file, $base) = @_;
+    $base = $HOME if @_ < 2;
     $file =~ s/^~/$HOME/;
-    return File::Spec->rel2abs($file, $HOME)
+    return defined($base) ? File::Spec->rel2abs($file, $base) : $file;
 }
