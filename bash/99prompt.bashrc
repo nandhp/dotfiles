@@ -34,7 +34,7 @@ case "$TERM" in
                 # TTYs; in such cases, the command will not appear in
                 # the titlebar.)
                 _FD255=/proc/$$/fd/255
-                [ -e $_FD255 ] && [[ "$(readlink $_FD255)" = /dev/pts* ]] && \
+                [ -w $_FD255 ] && [[ "$(readlink $_FD255)" = /dev/pts* ]] && \
                     trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "update_terminal_cwd"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "$BASH_COMMAND - '"$_TITLE"'" >&255' DEBUG
                 unset _FD255
                 # FIXME: strip control characters (e.g. tab)
