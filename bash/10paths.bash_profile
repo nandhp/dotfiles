@@ -3,32 +3,28 @@
 # paths.bash_profile - Add entries to PATH, MANPATH, and INFOPATH
 #
 
-# Add a directory PATH without duplication
+# Add a directory to a path variable without duplication (uses
+# temporary _PATH variable)
 _pathmunge() {
-    case ":$PATH:" in
+    case ":$_PATH:" in
         *:"$1":*)
             ;;
         *)
             if [ "$2" = "after" ]; then
-                PATH=$PATH:$1
+                _PATH=$_PATH:$1
             else
-                PATH=$1:$PATH
+                _PATH=$1:$_PATH
             fi
     esac
 }
+
+_PATH="$PATH"
 
 # Add personal bin directory to PATH
 if [ -d ~/.local/bin  ]; then _pathmunge ~/.local/bin
 else
     [ -d ~/bin ] && _pathmunge ~/bin
     [ -d ~/perl ] && _pathmunge ~/perl
-fi
-# Update MANPATH and INFOPATH
-if [ -d ~/.local/share/man  ]; then MANPATH=~/.local/share/man:$MANPATH
-elif [ -d ~/.local/man ]; then MANPATH=~/.local/man:$MANPATH
-fi
-if [ -d ~/.local/share/info ]; then INFOPATH=~/.local/share/info:$INFOPATH
-elif [ -d ~/.local/info ]; then INFOPATH=~/.local/info:$INFOPATH
 fi
 
 # Add xscreensaver and sbin to PATH
@@ -38,8 +34,36 @@ for x in /usr/lib/xscreensaver /usr/lib/misc/xscreensaver \
     [ -d $x ] && _pathmunge $x after
 done
 
-# Cleanup
-unset x _pathmunge
+export PATH="$_PATH"
+_PATH="$MANPATH"
 
-# Export new environment variables
-export PATH MANPATH INFOPATH
+# Add personal man pages to MANPATH
+if [ -d ~/.local/share/man  ]; then _pathmunge ~/.local/share/man
+elif [ -d ~/.local/man ]; then _pathmunge ~/.local/man
+fi
+
+# Some systems have broken MANPATH handling (empty entry does not
+# imply default search path). Since on these systems we will be more
+# likely than average to want man pages, let's avoid breaking them by
+# converting our PATH to a MANPATH (in fact, this may actually be an
+# improvement if we end up with more man pages than we started with,
+# e.g. /opt/gnu/man).
+for x in $(IFS=:; for x in $PATH; do echo $x; done); do
+    x=${x%/*}
+    if [ -d "$x/share/man" ]; then _pathmunge "$x/share/man" after
+    elif [ -d "$x/man" ]; then _pathmunge "$x/man" after
+    fi
+done
+
+export MANPATH="$_PATH"
+_PATH="$INFOPATH"
+
+# Also add personal info pages to INFOPATH, because why not
+if [ -d ~/.local/share/info ]; then _pathmunge ~/.local/share/info
+elif [ -d ~/.local/info ]; then _pathmunge ~/.local/info
+fi
+
+export INFOPATH="$_PATH"
+
+# Cleanup
+unset x _pathmunge _PATH
