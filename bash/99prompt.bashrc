@@ -37,7 +37,6 @@ case "$TERM" in
                 [ -w $_FD255 ] && [[ "$(readlink $_FD255)" = /dev/pts* ]] && \
                     trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "update_terminal_cwd"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "${BASH_COMMAND//[[:cntrl:]]/ } - '"$_TITLE"'" >&255' DEBUG
                 unset _FD255
-                # FIXME: strip control characters (e.g. tab)
             fi
             PROMPT_COMMAND='title -a "'"$_TITLE"'"; '"$PROMPT_COMMAND"
             unset _TITLE
