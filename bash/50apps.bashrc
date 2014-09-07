@@ -84,7 +84,11 @@ elif [ -n "$(type -t perl-rename)" ]; then
     alias rename=perl-rename
 fi
 
-alias hexcat='xxd -a'
+hexcat() {
+    local x
+    [ "$#" = 0 ] && echo 'Usage: hexcat <file> [...]' >&2 && return 2
+    for x in "$@"; do xxd -a "$x"; done
+}
 alias mtr='mtr --curses'
 
 # Popular examples:
