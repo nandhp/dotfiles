@@ -1,0 +1,36 @@
+#?install ~/.pythonrc -*-python-*-
+#
+# pythonrc - Configuration for the interactive interpreter
+#
+
+# Readline customizations
+# http://dlo.me/archives/2014/09/08/pythonrc/
+# file:///usr/share/doc/python-doc/html/library/readline.html
+# file:///usr/share/doc/python-doc/html/library/rlcompleter.html
+# http://jbisbee.blogspot.com/2013/07/add-history-and-tab-completion-to.html
+try:
+    import readline
+except ImportError:
+    print("Warning: readline module not available")
+else:
+    # Enable completion with the Tab key
+    import rlcompleter
+    if 'libedit' in readline.__doc__: # Needed on some versions of Mac OS X
+        readline.parse_and_bind("bind ^I rl_complete")
+    else:
+        readline.parse_and_bind("tab: complete")
+    del rlcompleter
+
+    # Use a history file
+    import os, atexit
+    histfile = os.path.expanduser('~/.python_history')
+    try:
+        readline.read_history_file(histfile)
+    except IOError:
+        pass
+    # Write history file at exit. FIXME: merge history file
+    atexit.register(readline.write_history_file, histfile)
+    del histfile, atexit, os
+    readline.set_history_length(500)
+
+    del readline
