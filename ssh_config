@@ -5,5 +5,12 @@
 #
 
 <?
+    # Determine the installed version of OpenSSH.
+    `ssh -V 2>&1` =~ m/^ *OpenSSH[_ ](\d+)\.(\d+)/;
+    $OPENSSH_VERSION = (int($2)<< 8)+(int($1)<<16);
+?>
+# Generated for OpenSSH version <? printf("0x%06x", OPENSSH_VERSION) ?>.
+
+<?
 run_parts("*.ssh_config", "#");
 
