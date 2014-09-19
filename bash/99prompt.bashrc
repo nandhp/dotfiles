@@ -35,10 +35,10 @@ case "$TERM" in
                 # the titlebar.)
                 _FD255=/proc/$$/fd/255
                 [ -w $_FD255 ] && [[ "$(readlink $_FD255)" = /dev/pts* ]] && \
-                    trap '[[ "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "update_terminal_cwd"* || "$BASH_COMMAND" = "exit"* || -n "$_NO_CMD_TITLEBAR" ]] || title -a -- "${BASH_COMMAND//[[:cntrl:]]/ } - '"$_TITLE"'" >&255' DEBUG
+                    trap '[[ -n "$_NO_CMD_TITLEBAR" || "$BASH_COMMAND" = "_NO_CMD_TITLEBAR="* || "$BASH_COMMAND" = "title -a"* || "$BASH_COMMAND" = "exit"* ]] || title -a -- "${BASH_COMMAND//[[:cntrl:]]/ } - '"$_TITLE"'" >&255' DEBUG
                 unset _FD255
             fi
-            PROMPT_COMMAND='title -a "'"$_TITLE"'"; '"$PROMPT_COMMAND"
+            PROMPT_COMMAND='_NO_CMD_TITLEBAR=1; title -a "'"$_TITLE"'"; '"$PROMPT_COMMAND"'; unset _NO_CMD_TITLEBAR'
             unset _TITLE
         fi
         PS1="\[\033[01;${_COLOR}m\]$_USER\h\[\033[01;34m\] \w\$\[\033[00m\] "
