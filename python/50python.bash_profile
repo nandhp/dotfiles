@@ -3,4 +3,5 @@
 # python.bash_profile - Install ~/.pythonrc
 #
 
-export PYTHONSTARTUP=~/.pythonrc
+PYTHONSTARTUP=~/.pythonrc
+export PYTHONSTARTUP
