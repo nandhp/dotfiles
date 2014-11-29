@@ -68,7 +68,7 @@ sub build {
             push @diffs, ['i', $origfile];
             return;
         }
-        return if $origfile =~ /(^|\/)\.|(\.pm|~)$/;
+        return if $origfile =~ /(^|\/)[#.]|(\.pm|~)$/;
         open F, '<', $path or die "open $path: $!";
         my $line = <F>;
         $line = <F> if $line and $line =~ m/^#!/;
