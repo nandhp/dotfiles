@@ -23,6 +23,9 @@ export BROWSER=firefox
 export CLICOLOR=1               # Enable on Mac OS X (same as ls -G)
 [ -n "$(type -t dircolors)" ] && eval "$(dircolors -b)" # GNU extended colors
 
+# Enable colors in gcc
+GCC_COLORS=1                    # Use default colors. GCC >= 4.9
+
 # Probe a command for acceptable command-line arguments.
 # Usage: _probe_args <command> <testsuffix> <testcriteria> <arg> [...]
 _probe_args() {
