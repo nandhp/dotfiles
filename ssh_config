@@ -6,7 +6,7 @@
 
 <?
     # Determine the installed version of OpenSSH.
-    `ssh -V` =~ m/^ *OpenSSH[_ ](\d+)\.(\d+)/;
+    `ssh -V 2>&1` =~ m/^ *OpenSSH[_ ](\d+)\.(\d+)/m;
     $OPENSSH_VERSION = (int($2)<< 8)+(int($1)<<16);
     $OPENSSH_VERSION or warn "Can't identify version of OpenSSH";
 ?>

@@ -5,7 +5,7 @@
 
 <?
     # Determine the installed version of Git.
-    `git --version` =~ m/^ *git version (\d+)\.(\d+)\.(\d+)/i;
+    `git --version 2>&1` =~ m/^ *git version (\d+)\.(\d+)\.(\d+)/im;
     $GIT_VERSION = int($3)+(int($2)<< 8)+(int($1)<<16);
     $GIT_VERSION or warn "Can't identify version of git";
 ?>

@@ -1,6 +1,6 @@
 ;;? <?
     # Determine the installed version of Emacs.
-    `emacs --version` =~ m/^GNU Emacs (\d+)\.(\d+)\.(\d+)/;
+    `emacs --version 2>&1` =~ m/^GNU Emacs (\d+)\.(\d+)\.(\d+)/m;
     $EMACS_VERSION = int($3)+(int($2)<< 8)+(int($1)<<16);
     $EMACS_VERSION or warn "Can't identify version of Emacs";
     if ( $EMACS_VERSION < (22<<16) ) { ?>
