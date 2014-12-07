@@ -19,6 +19,8 @@
 	excludesfile = ~/.config/git/ignore
 [status]
 	showuntrackedfiles = no
+[log]
+	decorate = short
 [alias]
 	uncommit = reset --soft HEAD^
 	whoami = !git var GIT_COMMITTER_IDENT | sed 's/[-0-9 ]*$//'
