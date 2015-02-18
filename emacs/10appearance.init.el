@@ -4,26 +4,19 @@
 
 ;; Disable extra window dressing. Use frame-alists due to a bug
 ;; unsetting menu/toolbar in Emacs 23.
-(setq initial-frame-alist '((width . 80) (height . 40)
+(setq default-frame-alist '((width . 80) (height . 40)
 			    (menu-bar-lines . 0) (tool-bar-lines . 0)))
-(setq default-frame-alist initial-frame-alist)
+;; Use reverse video (white-on-black) on graphical displays.
+(setq window-system-default-frame-alist '((x (reverse . t))
+                                          (ns (reverse . t))))
+;; Update initial frame from default-frame-alist
+(setq initial-frame-alist
+      (append default-frame-alist
+              (cdr (assq (window-system) window-system-default-frame-alist))))
 
 ;; Insert buffer name into frame titles
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
-
-;; Invert colors for white-on-black. Unfortunately, this doesn't play
-;; nicely with emacs --daemon.
-;;
-;;; Via http://home.thep.lu.se/~karlf/emacs.html#sec-3-2
-;;; Doesn't work in Emacs 23 due to bug #4776/#4777
-;;(defun mb/pick-color-theme (frame)
-;;  (select-frame frame)
-;;  (let ((color-theme-is-global nil)) ; n.b. applies to Emacs 24 color-themes
-;;    (if (window-system frame)
-;;        (invert-face 'default))))
-;;(add-hook 'after-make-frame-functions 'mb/pick-color-theme)
-(if (window-system) (invert-face 'default))
 
 ;; Turn on font-lock mode
 (when (fboundp 'global-font-lock-mode)

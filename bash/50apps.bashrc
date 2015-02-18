@@ -12,10 +12,6 @@ fi
 export LESS=-iR
 export PAGER=less
 
-# Editor configuration (FIXME: emacsify)
-export EDITOR=nano
-export VISUAL=nano
-
 # Default web browser
 export BROWSER=firefox
 

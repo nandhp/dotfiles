@@ -1,0 +1,38 @@
+#!/bin/sh
+#?install -m0755 ~/.local/bin/run-emacs
+#
+# run-emacs - Activate a nearby Emacs window, or create a new one.
+#
+# If there is an Emacs window on the current desktop, activate it.
+# Otherwise, use emacsclient to open a new one.
+#
+# If Emacs is not running (or wmctrl is unavailable), start a new
+# Emacs session.
+#
+
+if [ -z "$DISPLAY" ] || ! wmctrl -m >/dev/null 2>&1; then
+    # No X display, so just use this terminal.
+    emacsclient -nw "$@" || emacs "$@"
+fi
+
+# Find an Emacs window on the current desktop (starred in wmctrl -d)
+WIN=$( ( wmctrl -d && wmctrl -l -x ) | awk '$2 == "*" { DESK = $1 } /^0x[0-9a-fA-F]+ +[-0-9]+ emacs/ { if ( $2 == DESK ) { print $1; exit } }' )
+# Find current active window (using xprop)
+ACTIVE="$( xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW 2>/dev/null | cut -f2 )"
+
+if [ -n "$WIN" ]; then
+    # Raise an existing Emacs window.
+    wmctrl -i -a "$WIN"
+    if [ -n "$*" ]; then
+        emacsclient "$@" || emacs "$@"
+        # Return to previous active window, if known.
+        [ -n "$ACTIVE" ] && wmctrl -i -a "$ACTIVE"
+    fi
+elif [ -n "$*" ]; then
+    # No existing Emacs window, so create one to edit this file.
+    emacsclient -c "$@" || emacs "$@"
+    # Window will close automatically.
+else
+    # Create a new Emacs window in the background.
+    emacsclient -c -n || ( echo Starting emacs...; emacs& )
+fi
