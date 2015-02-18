@@ -29,3 +29,6 @@
   ;(setq indent-line-function 'python-indent-line-1)
 )
 (add-hook 'python-mode-hook 'my-python-mode)
+
+;; Make MATLAB mode less annoying
+(setq matlab-auto-fill nil)
