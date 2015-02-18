@@ -1,4 +1,4 @@
-#?install -m 0700 -d ~/.ssh
+#?install -m 0700 -d ~/.ssh -*-perl-*-
 #?install ~/.ssh/config
 #
 # ssh_config - SSH client configuration
@@ -16,12 +16,15 @@
 # Reimplementation of %h in ssh_config HostName (introduced in OpenSSH 5.6)
 sub short_aliases {
     my $domain = shift;
+    my $str = "*$domain";
     foreach ( @_ ) {
         print <<EOF;
 Host $_
      HostName $_$domain
 EOF
+        $str .= " $_ $_$domain";
     }
+    return $str;
 }
 
 run_parts("*.ssh_config", "#");
