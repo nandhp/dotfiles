@@ -5,4 +5,4 @@
 
 export EDITOR=run-emacs
 export VISUAL=run-emacs
-alias edit="$EDITOR"
+alias edit="$EDITOR -n"

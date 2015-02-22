@@ -4,35 +4,72 @@
 # run-emacs - Activate a nearby Emacs window, or create a new one.
 #
 # If there is an Emacs window on the current desktop, activate it.
-# Otherwise, use emacsclient to open a new one.
+# Otherwise, use emacsclient to open a new one. If Emacs is not
+# running (or wmctrl is unavailable), start a new Emacs session.
 #
-# If Emacs is not running (or wmctrl is unavailable), start a new
-# Emacs session.
+# If the -n option is given, don't wait for the editing session to
+# finish, if applicable (e.g. using a window-system).
 #
+
+# Parse for command-line arguments
+NOWAIT=''
+while [ "$#" -gt 0 ]; do
+    if [ "$1" = "-n" ]; then
+        NOWAIT="-n"
+        shift
+    elif [ "$1" = "-h" ]; then
+        echo "Usage: $0 [-n] [<file> [...]]" >&2
+        echo "    -n Don't wait for editing to finish, if applicable" >&2
+        exit 2
+    else
+        break
+    fi
+done
+
+# Run emacs, respecting NOWAIT and using given emacsclient options.
+RC=10                           # Exit status
+doemacs() {
+    FLAGS="$1"
+    shift
+    emacsclient $NOWAIT $FLAGS "$@" || (
+        if [ -z "$NOWAIT" ]; then
+            emacs "$@"
+        else
+            emacs "$@" &
+        fi
+    )
+    RC=$?
+}
 
 if [ -z "$DISPLAY" ] || ! wmctrl -m >/dev/null 2>&1; then
     # No X display, so just use this terminal.
-    emacsclient -nw "$@" || emacs "$@"
+    NOWAIT=
+    doemacs '-nw' "$@"
+    exit $RC
 fi
 
 # Find an Emacs window on the current desktop (starred in wmctrl -d)
 WIN=$( ( wmctrl -d && wmctrl -l -x ) | awk '$2 == "*" { DESK = $1 } /^0x[0-9a-fA-F]+ +[-0-9]+ emacs/ { if ( $2 == DESK ) { print $1; exit } }' )
 # Find current active window (using xprop)
-ACTIVE="$( xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW 2>/dev/null | cut -f2 )"
+if [ -z "$NOWAIT" ]; then
+    ACTIVE="$( xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW 2>/dev/null | cut -f2 )"
+else
+    ACTIVE=
+fi
 
-if [ -n "$WIN" ]; then
-    # Raise an existing Emacs window.
+if [ -n "$WIN" ]; then          # Raise an existing Emacs window.
     wmctrl -i -a "$WIN"
-    if [ -n "$*" ]; then
-        emacsclient "$@" || emacs "$@"
-        # Return to previous active window, if known.
+    if [ "$#" -gt 0 ]; then
+        # Edit a specific file in the window.
+        doemacs '' "$@"
+        # Return to previous active window after editing (if known).
         [ -n "$ACTIVE" ] && wmctrl -i -a "$ACTIVE"
     fi
-elif [ -n "$*" ]; then
-    # No existing Emacs window, so create one to edit this file.
-    emacsclient -c "$@" || emacs "$@"
+else               # No existing Emacs window; create one.
+    # If we're not editing a specific file, set NOWAIT.
+    [ "$#" -eq 0 ] && NOWAIT=-n
+    doemacs '-c' "$@"
     # Window will close automatically.
-else
-    # Create a new Emacs window in the background.
-    emacsclient -c -n || ( echo Starting emacs...; emacs& )
 fi
+
+exit $RC
