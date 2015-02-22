@@ -32,3 +32,7 @@
 
 ;; Make MATLAB mode less annoying
 (setq matlab-auto-fill nil)
+
+;; Use Markdown mode for Markdown files
+(if (fboundp 'markdown-mode)
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
