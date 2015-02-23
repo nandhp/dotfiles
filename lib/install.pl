@@ -7,6 +7,7 @@
 
 use File::Find;
 use File::Spec;
+use File::Basename;
 use Text::ParseWords;
 use Data::Dumper;
 use warnings;
@@ -152,6 +153,12 @@ sub build {
                 push @files, \@newcmd;
                 push @diffs, ['l', $newcmd[-1], $newcmd[-2]];
             }
+            # FIXME: better way to run one-off commands
+            elsif ( $cmd eq 'shell' ) {
+                (my $shellcmd = $commandline) =~ s/^\s*shell\s+//i;
+                push @files, ['sh', '-c', $shellcmd, '', $origfile, $outfile];
+                push @diffs, ['i', $origfile, "Run $shellcmd"];
+            }
             elsif ( $cmd eq 'run' ) {
                 chmod 0700, $outfile or die "chmod $outfile: $!";
                 push @dirs, ['sh', '-e', '-c',
@@ -220,7 +227,7 @@ sub diff {
             }
         }
         elsif ( $type eq 'i' ) {
-            print "Run script\n";
+            print $data[1] ? "$data[1]\n" : "Run script $data[0]\n";
         }
         else {
             die "Unknown diff type $type";
