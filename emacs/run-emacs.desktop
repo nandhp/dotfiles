@@ -1,0 +1,15 @@
+#?install -d ~/.local/share/applications
+#?install ~/.local/share/applications/run-emacs.desktop
+#?shell UDD=update-desktop-database; if type $UDD > /dev/null; then $UDD ~/.local/share/applications && echo "$UDD successful"; else echo "Skipping $UDD" >&2; fi
+[Desktop Entry]
+Version=1.0
+Name=Open Emacs
+GenericName=Text Editor
+Comment=View and edit text files (run-emacs)
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+Exec=run-emacs %F
+TryExec=run-emacs
+Icon=emacs.svg
+Type=Application
+Terminal=false
+Categories=Utility;Development;TextEditor;
