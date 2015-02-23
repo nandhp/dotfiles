@@ -41,6 +41,14 @@ doemacs() {
     RC=$?
 }
 
+# Forward ssh-agent
+if [ -n "$SSH_AUTH_SOCK" -a -S "$SSH_AUTH_SOCK" -a -r "$SSH_AUTH_SOCK" ]; then
+    emacsclient -e "(when (fboundp 'ssh-agent-maybe-change-socket)
+                      (ssh-agent-maybe-change-socket \"$SSH_AUTH_SOCK\"))" \
+                >/dev/null &
+fi
+
+# Check if running under X
 if [ -z "$DISPLAY" ] || ! wmctrl -m >/dev/null 2>&1; then
     # No X display, so just use this terminal.
     NOWAIT=

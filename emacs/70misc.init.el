@@ -14,8 +14,6 @@
 ;; Automatic (de)compression of files
 (auto-compression-mode t)
 
-;; Allow tramp to sudo on remote machines
-(setq tramp-default-proxies-alist '((".*" "\\`root\\'" "/ssh:%h:")))
 
 ;; Start emacsclient server
 (server-start)
