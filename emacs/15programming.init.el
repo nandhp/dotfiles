@@ -30,6 +30,14 @@
 )
 (add-hook 'python-mode-hook 'my-python-mode)
 
+;; Fix comment syntax in CSS mode
+(defun patch-css-mode-comment-syntax ()
+  (when (and (not (string-suffix-p " " comment-start))
+             (not (string-prefix-p " " comment-end)))
+    (setq comment-start (concat comment-start " "))
+    (setq comment-end (concat " " comment-end))))
+(add-hook 'css-mode-hook 'patch-css-mode-comment-syntax)
+
 ;; Make MATLAB mode less annoying
 (setq matlab-auto-fill nil)
 
