@@ -1,0 +1,11 @@
+#?install ~/.pdbrc -*-python-*-
+#
+# pdbrc - Configuration for the Python debugger
+#
+
+# This file contains debugger commands, not Python code.
+
+# Include ~/.pdbrc.py for Python-based customization of pdb. Pass
+# globals and (importantly) locals to avoid polluting the namespace of
+# the code being debugged.
+execfile(__import__('os').path.expanduser("~/.pdbrc.py"), globals(), locals())
