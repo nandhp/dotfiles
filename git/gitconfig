@@ -25,6 +25,7 @@
 	ls = ls-files -tso --abbrev
 	uncommit = reset --soft HEAD^
 	whoami = !git var GIT_COMMITTER_IDENT | sed 's/[-0-9 ]*$//'
+	graph = log --all --graph --oneline
 [push]
 	# Requires version 1.7.11
 	# http://git-core.googlecode.com/git/Documentation/RelNotes/1.7.11.txt
