@@ -217,12 +217,14 @@ programs:								      \
 - GL: 				geodesic -root				    \n\
 -				unicode -root				    \n\
   GL: 				projectiveplane -root			    \n\
-				tessellimage -root			    \n\
+-				tessellimage -root			    \n\
   GL: 				winduprobot -root			    \n\
 
 
 EOF
 # Blank lines at end of data
+
+# FIXME: Re-add tessellimage when vsync is working again
 
 # Read customizations from this file
 my %override = ();
