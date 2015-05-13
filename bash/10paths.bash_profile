@@ -35,6 +35,12 @@ for x in /usr/lib/xscreensaver /usr/lib/misc/xscreensaver \
 done
 
 export PATH="$_PATH"
+_PATH="$LD_LIBRARY_PATH"
+
+# Add personal lib directory to LD_LIBRARY_PATH
+[ -d ~/.local/lib  ] && _pathmunge ~/.local/lib
+
+export LD_LIBRARY_PATH="$_PATH"
 _PATH="$MANPATH"
 
 # Add personal man pages to MANPATH
