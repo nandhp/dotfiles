@@ -124,7 +124,7 @@ sub perlify {
     }
 
     my $lineno = 1;
-    while ( $data =~ m/<\?(=?) *(.*?[\r\n]*) *(?:\?>|$)|(.+?[\r\n]*)(?=(?:$|<\?))/gs ) {
+    while ( $data =~ m/<\?(?!xml)(=?) *(.*?[\r\n]*) *(?:\?>|$)|(.+?[\r\n]*)(?=(?:$|<\?))/gs ) {
         my ($isprint, $iscode, $text) = ($1, defined($2), $2||$3);
         die if $2 and $3;       # We can't have both at once!
         $perl .= "\n" if $DEBUG and $perl !~ m/\n$/;

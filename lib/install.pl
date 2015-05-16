@@ -72,7 +72,7 @@ sub build {
         return if $origfile =~ /(^|\/)[#.]|(\.pm|~)$/;
         open F, '<', $path or die "open $path: $!";
         my $line = <F>;
-        $line = <F> if $line and $line =~ m/^#!/;
+        $line = <F> while $line and $line =~ m/^#!|^<(\?xml|!DOCTYPE|!--)/i;
         close F;
         return if !$line or $line !~ m/^[$COMMENTS]+\?/;
         (my $file = $origfile) =~ s/[^-+_a-zA-Z0-9.,]/_/g;
