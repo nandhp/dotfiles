@@ -1,6 +1,6 @@
 # -*-sh-*-
 #
-# python.bash_profile - Install ~/.pythonrc
+# python.profile - Set PYTHONSTARTUP to ~/.pythonrc
 #
 
 PYTHONSTARTUP=~/.pythonrc

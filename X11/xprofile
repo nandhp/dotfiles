@@ -5,5 +5,5 @@
 
 cd ~
 
-# Use .bash_profile (FIXME: just rename it to .profile?)
-[ -r ~/.bash_profile ] && . ~/.bash_profile
+# Include .profile
+[ -r ~/.profile ] && . ~/.profile

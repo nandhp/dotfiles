@@ -1,6 +1,6 @@
 # -*-sh-*-
 #
-# paths.bash_profile - Add entries to PATH, MANPATH, and INFOPATH
+# paths.profile - Add entries to PATH, MANPATH, and INFOPATH
 #
 
 # Add a directory to a path variable without duplication (uses

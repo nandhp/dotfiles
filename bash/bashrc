@@ -21,4 +21,4 @@
 
 <? run_parts("*.bashrc", "#") ?>
 
-[[ -z "$_RUNNING_BASH_PROFILE" ]] && unset _NO_CMD_TITLEBAR
+[[ -z "$_RUNNING_PROFILE" ]] && unset _NO_CMD_TITLEBAR

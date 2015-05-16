@@ -1,6 +1,6 @@
 # -*-sh-*-
 #
-# perl.bash_profile - Set up a Perl library in ~/.local
+# perl.profile - Set up a Perl library in ~/.local
 #
 
 USERBASE=~/.local
