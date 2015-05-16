@@ -1,9 +1,0 @@
-#?install ~/.xprofile
-#
-# xprofile - Set up the environment for X sessions (for logins from xdm)
-#
-
-cd ~
-
-# Include .profile
-[ -r ~/.profile ] && . ~/.profile
