@@ -8,7 +8,8 @@ URxvt.foreground: white
 URxvt.background: black
 URxvt.cursorColor: green
 URxvt.font: xft:Terminus:size=9
-URxvt.fontSizes: 9,10,13,16,20,23 ! Used by font plugin
+! fontSizes used by font plugin
+URxvt.fontSizes: 9,10,13,16,20,23
 URxvt.scrollTtyOutput: false
 URxvt.scrollWithBuffer: true
 URxvt.scrollTtyKeypress: true
