@@ -20,3 +20,7 @@ fi
 export FTP_PASSIVE=1		# Because PORT doesn't work over NAT.
 # export CVS_RSH=ssh            # I mostly use anonymous CVS these days.
 unset _NO_CMD_TITLEBAR
+
+<?
+  # Check for legacy .bash_profile
+  -e "$ENV{HOME}/.bash_profile" and die "Error: ~/.bash_profile exists\n"
