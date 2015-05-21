@@ -10,7 +10,7 @@ sub find_terminal_icon() {
     my @themes = ('Tango', 'gnome', 'hicolor', 'default', 'Adwaita');
     # Various icon names might be available
     my @names = ('utilities-terminal', 'terminal',
-                 'gnome-terminal', 'xfce-terminal')
+                 'gnome-terminal', 'xfce-terminal');
 
     for my $size ( 'scalable' ) {
         for my $ext ( 'svg', 'png', 'xpm' ) {
