@@ -3,6 +3,29 @@
 ! urxvt.Xresources - urxvt configuration
 !
 
+<?
+# Find a decent Terminal icon
+sub find_terminal_icon() {
+    # Try Tango first, and other default themes
+    my @themes = ('Tango', 'gnome', 'hicolor', 'default', 'Adwaita');
+    # Various icon names might be available
+    my @names = ('utilities-terminal', 'terminal',
+                 'gnome-terminal', 'xfce-terminal')
+
+    for my $size ( 'scalable' ) {
+        for my $ext ( 'svg', 'png', 'xpm' ) {
+            for my $theme ( @themes ) {
+                for my $basename ( @names ) {
+                    my $f = "/usr/share/icons/$theme/$size/apps/$basename.$ext";
+                    return $f if -f $f;
+                }
+            }
+        }
+    }
+    return '/usr/share/pixmaps/urxvt.xpm'
+}
+?>
+
 ! General appearance and behavior
 URxvt.foreground: white
 URxvt.background: black
@@ -13,7 +36,7 @@ URxvt.fontSizes: 9,10,13,16,20,23
 URxvt.scrollTtyOutput: false
 URxvt.scrollWithBuffer: true
 URxvt.scrollTtyKeypress: true
-URxvt.iconFile: /usr/share/icons/Tango/scalable/apps/terminal.svg
+URxvt.iconFile: <? print find_terminal_icon() ?>
 URxvt.cutchars: "$!\\ `\"'()*;<>[]^{|}"
 URxvt.saveLines: 50000
 
