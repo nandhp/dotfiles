@@ -26,6 +26,15 @@ while [ "$#" -gt 0 ]; do
     fi
 done
 
+# In the unlikely event that Emacs is not installed, try nano
+if ! type emacs >/dev/null 2>&1; then
+    echo "$0: Warning: Emacs not found." >&2
+    type nano >/dev/null 2>&1 && exec nano "$@"
+    type vi >/dev/null 2>&1 && exec vi "$@"
+    echo "$0: no editor found; even tried vi." >&2
+    exit 1
+fi
+
 # Run emacs, respecting NOWAIT and using given emacsclient options.
 RC=10                           # Exit status
 doemacs() {
