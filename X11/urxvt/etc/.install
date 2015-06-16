@@ -5,32 +5,32 @@
 
 set -e
 
-TEMPDIR=$(mktemp -d)
-ALTTEMP=$(mktemp -d)
+TEMP_BASE="$(mktemp -d dotfiles-urxvt-terminfo.XXXXXX)"
+TEMP_TERMINFO="$TEMP_BASE/terminfo"
 
-TERMINFO="$TEMPDIR" tic rxvt-unicode.terminfo
-for TERMFILE in $(cd "$TEMPDIR" && find . -type f); do
+TERMINFO="$TEMP_TERMINFO" tic rxvt-unicode.terminfo
+for TERMFILE in $(cd "$TEMP_TERMINFO" && find . -type f); do
     TERMFILE="${TERMFILE#./}"
     TERMNAME="${TERMFILE##*/}"
-    TEMPFILE="$TEMPDIR/$TERMFILE"
-    OUTFILE=~/.terminfo/"$TERMFILE"
-    echo "$OUTFILE"
+    TERM_TEMP="$TEMP_TERMINFO/$TERMFILE"
+    TERM_OUT=~/.terminfo/"$TERMFILE"
+    echo "$TERM_OUT"
 
-    [ -e "$OUTFILE" ] && mv "$OUTFILE" "$OUTFILE"~
+    [ -e "$TERM_OUT" ] && mv "$TERM_OUT" "$TERM_OUT"~
 
-    if infocmp "$TERMNAME" > "$ALTTEMP/terminfo.tmp" 2>/dev/null; then
-        SYSFILE=$(head -1 "$ALTTEMP/terminfo.tmp" | cut -d: -f2 | cut -c2-)
-        if [ -z "$SYSFILE" ] || ! [ -e "$SYSFILE" ]; then
+    if infocmp "$TERMNAME" > "$TEMP_BASE/terminfo.tmp" 2>/dev/null; then
+        TERM_SYS=$(head -1 "$TEMP_BASE/terminfo.tmp" | cut -d: -f2 | cut -c2-)
+        if [ -z "$TERM_SYS" ] || ! [ -e "$TERM_SYS" ]; then
             echo "  Warning: existing terminfo has strange behavior"
-        elif cmp -s "$SYSFILE" "$TEMPFILE"; then
+        elif cmp -s "$TERM_SYS" "$TERM_TEMP"; then
             echo "  Matches existing terminfo."
         else
-            echo "  Note: $TERMNAME does not match $SYSFILE"
+            echo "  Note: $TERMNAME does not match $TERM_SYS"
         fi
     fi
 
-    mkdir -p $(dirname "$OUTFILE")
-    mv "$TEMPFILE" "$OUTFILE"
+    mkdir -p $(dirname "$TERM_OUT")
+    mv "$TERM_TEMP" "$TERM_OUT"
     echo "  Installed"
 done
-rm -r "$TEMPDIR" "$ALTTEMP"
+rm -r "$TEMP_BASE"
