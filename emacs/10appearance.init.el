@@ -9,6 +9,8 @@
 ;; Use reverse video (white-on-black) on graphical displays.
 (setq window-system-default-frame-alist '((x (reverse . t))
                                           (ns (reverse . t))))
+;; Alternate reverse-video method that doesn't work with emacs --daemon.
+;;(if (window-system) (invert-face 'default))
 ;; Update initial frame from default-frame-alist
 (setq initial-frame-alist
       (append default-frame-alist
