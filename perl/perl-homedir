@@ -1,0 +1,6 @@
+#?install ~/.perl-homedir
+#
+# perl-homedir - Disable automatic local::lib
+#
+
+PERL_HOMEDIR=
