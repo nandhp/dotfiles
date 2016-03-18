@@ -2,6 +2,10 @@
 ;; appearance.init.el - Set up frames, faces, and font-lock
 ;;
 
+;; Disable bell
+(setq visible-bell nil)
+(setq ring-bell-function 'ignore)
+
 ;; Disable extra window dressing. Use frame-alists due to a bug
 ;; unsetting menu/toolbar in Emacs 23.
 (setq default-frame-alist '((width . 80) (height . 40)
