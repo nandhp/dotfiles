@@ -18,6 +18,17 @@ fi
 # Modify capitalization of $USER, because it may be unexpected in cygwin
 case "$TERM" in
     xterm*|rxvt*|cygwin*|screen*) # Color and title bar available
+        # Some system bashrc files come with PROMPT_COMMAND preset to
+        # set the window or screen window name. Remove them. We cannot
+        # simply clear the PROMPT_COMMAND since some of them are useful.
+        if [ -n "$PROMPT_COMMAND" -a -n "$BASH" ]; then
+            _TEMP="${PROMPT_COMMAND#*\033}"
+            if [ "${_TEMP:0:3}" = "]0;" ] || # Set title/hardstatus
+                   [ "${_TEMP:0:1}" = "k" ]; then # Screen window name
+                PROMPT_COMMAND=
+            fi
+            unset _TEMP
+        fi
         # Bashisms are okay in PROMPT_COMMAND, as it is a bashism itself.
         if [ -n $(type -t title) ]; then
             _TITLE='$USER@${HOSTNAME%%.*}'
