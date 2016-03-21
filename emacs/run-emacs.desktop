@@ -12,4 +12,5 @@ TryExec=run-emacs
 Icon=emacs.svg
 Type=Application
 Terminal=false
+StartupNotify=false
 Categories=Utility;Development;TextEditor;
