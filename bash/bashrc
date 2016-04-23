@@ -11,14 +11,6 @@
 # Load local customizations
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local
 
-# Only customize interactive shells
-[ -z "$PS1" ] && return
-
-# OPERATING_SYSTEM=$(uname -s)
-[ -z "$USER" ] && USER=$(id -u -n)
-[ -z "$HOSTNAME" ] && HOSTNAME=$(hostname)
-# LOGNAME? USERNAME?
-
 <? run_parts("*.bashrc", "#") ?>
 
 [[ -z "$_RUNNING_PROFILE" ]] && unset _NO_CMD_TITLEBAR
