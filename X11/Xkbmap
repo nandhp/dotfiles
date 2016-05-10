@@ -1,0 +1,34 @@
+#?quiet -*-perl-*-
+#?install ~/.Xkbmap
+#?<?
+#
+# Xkbmap - X keyboard configuration
+#
+
+# Unfortunately, not all scripts that use this file permit comments.
+
+print "\n";
+print "-option compose:caps\n";
+
+# Determine system manufacturer using sysfs.
+my $vf = '/sys/devices/virtual/dmi/id/sys_vendor';
+my $vendor = '';
+if ( open my $vfh, '<', $vf ) {
+    ($vendor = <$vfh>) =~ s/[\r\n]*$//;
+    close $vfh;
+}
+else {
+    warn "$vf: $!";
+}
+
+if ( $vendor =~ m/^Apple/ ) {
+    # If system vendor is Apple, swap Alt and Command keys.
+
+    # For older versions of xkbmap (<= 2.5.1-3)
+    print "-option altwin:swap_lalt_lwin\n";
+
+    # For newer versions of xkbmap (>= 2.10.1-1)
+    # See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733923
+    print "-option altwin:swap_alt_win\n";
+}
+?>
