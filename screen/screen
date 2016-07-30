@@ -9,5 +9,5 @@ for SCREEN in $(type -Pa screen) /bin/false; do
     head -c2 $SCREEN|grep '#!' >/dev/null || break
 done
 
+[ "$SCREEN" = /bin/false ] && echo "screen: does not seem to be installed" >&2
 PRESERVE_LD_LIBRARY_PATH="$LD_LIBRARY_PATH" exec $SCREEN "$@"
-
