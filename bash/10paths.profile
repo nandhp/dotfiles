@@ -10,10 +10,12 @@ _pathmunge() {
         *:"$1":*)
             ;;
         *)
-            if [ "$2" = "after" ]; then
-                _PATH=$_PATH:$1
+            if [ -z "$_PATH" ]; then
+                _PATH="$1"
+            elif [ "$2" = "after" ]; then
+                _PATH="$_PATH:$1"
             else
-                _PATH=$1:$_PATH
+                _PATH="$1:$_PATH"
             fi
     esac
 }
@@ -54,6 +56,7 @@ fi
 # converting our PATH to a MANPATH (in fact, this may actually be an
 # improvement if we end up with more man pages than we started with,
 # e.g. /opt/gnu/man).
+_PATH="$_PATH:"                 # Ensure empty entry exists
 for x in $(IFS=:; for x in $PATH; do echo $x; done); do
     x=${x%/*}
     if [ -d "$x/share/man" ]; then _pathmunge "$x/share/man" after
