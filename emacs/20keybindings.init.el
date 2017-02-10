@@ -79,3 +79,10 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; <f12> to make a buffer go away (without killing it)
 (global-set-key (kbd "<f12>") 'bury-buffer)
+
+;; zoom-frame
+(when (load "zoom-frm" 'noerror)
+  (define-key ctl-x-map [(control ?+)] 'zoom-in/out)
+  (define-key ctl-x-map [(control ?-)] 'zoom-in/out)
+  (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
+  (define-key ctl-x-map [(control ?0)] 'zoom-in/out))
