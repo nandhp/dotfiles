@@ -76,6 +76,8 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "C-c C-o") 'compare-windows)
 (add-hook 'c-mode-common-hook ; c-mode redefines C-c C-o for c-set-offset
           (lambda () (local-set-key (kbd "C-c C-o") 'compare-windows)))
+(add-hook 'html-mode-hook ; html-mode redefines C-c C-o for sgml-tag
+          (lambda () (local-set-key (kbd "C-c C-o") 'compare-windows)))
 
 ;; <f12> to make a buffer go away (without killing it)
 (global-set-key (kbd "<f12>") 'bury-buffer)

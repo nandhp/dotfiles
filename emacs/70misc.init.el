@@ -19,6 +19,9 @@
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 (require 'uniquify nil 'noerror)
 
+;; Reenable backup files for files under version control
+(setq vc-make-backup-files t)
+
 ;; Start emacsclient server
 (server-start)
 
