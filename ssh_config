@@ -16,7 +16,8 @@
 # Reimplementation of %h in ssh_config HostName (introduced in OpenSSH 5.6)
 sub short_aliases {
     my $domain = shift;
-    my $str = "*$domain";
+    my $str = '';
+    $str .= "*$domain" if $domain =~ s/^\*//;
     foreach ( @_ ) {
         print <<EOF;
 Host $_
