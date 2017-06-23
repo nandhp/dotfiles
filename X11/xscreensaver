@@ -12,7 +12,7 @@ programs:								      \
   GL: 				superquadrics -root			    \n\
 				attraction -root			    \n\
 				blitspin -root				    \n\
--				greynetic -root				    \n\
+				greynetic -root -delay 50000		    \n\
 -				helix -root				    \n\
 -				hopalong -root				    \n\
 -				imsmap -root				    \n\
@@ -29,7 +29,7 @@ programs:								      \
 -				bouboule -root				    \n\
 -				braid -root				    \n\
 -				coral -root				    \n\
--				deco -root				    \n\
+				deco -root -golden-ratio -smooth-colors	    \n\
 				drift -root				    \n\
 -				fadeplot -root				    \n\
 				galaxy -root				    \n\
@@ -62,12 +62,12 @@ programs:								      \
 - GL: 				bubble3d -root				    \n\
 - GL: 				cage -root				    \n\
 -				crystal -root				    \n\
--				cynosure -root				    \n\
+				cynosure -root				    \n\
 -				discrete -root				    \n\
 -				distort -root				    \n\
 				epicycle -root				    \n\
 				flow -root				    \n\
-- GL: 				glplanet -root				    \n\
+  GL: 				glplanet -root -no-wander		    \n\
 				interference -root			    \n\
 				kumppa -root				    \n\
 - GL: 				lament -root				    \n\
@@ -141,6 +141,7 @@ programs:								      \
 -				apple2 -root				    \n\
   GL: 				atunnel -root				    \n\
 				barcode -root -mode grid		    \n\
+				barcode -root -mode clock		    \n\
   GL: 				blinkbox -root				    \n\
   GL: 				blocktube -root -wireframe		    \n\
   GL: 				bouncingcow -root			    \n\
@@ -152,7 +153,7 @@ programs:								      \
 				fontglide -root				    \n\
   GL: 				gleidescope -root			    \n\
 - GL: 				glknots -root				    \n\
-- GL: 				glmatrix -root				    \n\
+- GL: 				glmatrix -root -mode hexadecimal	    \n\
 - GL: 				glslideshow -root			    \n\
   GL: 				hypertorus -root			    \n\
 - GL: 				jigglypuff -root			    \n\
@@ -181,11 +182,11 @@ programs:								      \
 				wormhole -root				    \n\
 - GL: 				antmaze -root				    \n\
 - GL: 				boing -root				    \n\
--				boxfit -root				    \n\
+				boxfit -root				    \n\
   GL: 				carousel -root				    \n\
 -				celtic -root				    \n\
   GL: 				crackberg -root				    \n\
-- GL: 				cube21 -root				    \n\
+  GL: 				cube21 -root				    \n\
 				fiberlamp -root				    \n\
   GL: 				fliptext -root				    \n\
   GL: 				glhanoi -root				    \n\
@@ -195,7 +196,7 @@ programs:								      \
   GL: 				topblock -root				    \n\
   GL: 				cubicgrid -root				    \n\
 				cwaves -root				    \n\
-- GL: 				gears -root				    \n\
+  GL: 				gears -root				    \n\
 - GL: 				glcells -root				    \n\
   GL: 				lockward -root				    \n\
 -				m6502 -root				    \n\
@@ -210,16 +211,30 @@ programs:								      \
   GL: 				companioncube -root			    \n\
   GL: 				hilbert -root				    \n\
 - GL: 				tronbit -root				    \n\
+  GL: 				geodesic -root				    \n\
 				hexadrop -root				    \n\
   GL: 				kaleidocycle -root			    \n\
 - GL: 				quasicrystal -root			    \n\
 - GL: 				unknownpleasures -root			    \n\
-- GL: 				geodesic -root				    \n\
+				binaryring -root			    \n\
+  GL: 				cityflow -root				    \n\
+- GL: 				geodesicgears -root			    \n\
 -				unicode -root				    \n\
   GL: 				projectiveplane -root			    \n\
+  GL: 				romanboy -root				    \n\
 -				tessellimage -root			    \n\
   GL: 				winduprobot -root			    \n\
-
+  GL: 				splitflap -root				    \n\
+  GL: 				cubestack -root				    \n\
+  GL: 				cubetwist -root				    \n\
+- GL: 				discoball -root				    \n\
+  GL: 				dymaxionmap -root			    \n\
+  GL: 				energystream -root			    \n\
+  GL: 				hexstrut -root				    \n\
+- GL: 				hydrostat -root				    \n\
+  GL: 				raverhoop -root				    \n\
+  GL: 				splodesic -root				    \n\
+  GL: 				unicrud -root				    \n\
 
 EOF
 # Blank lines at end of data
