@@ -9,7 +9,7 @@
 
 <?
     # Determine the installed version of nano.
-    `nano --version 2>&1` =~ m/^ *GNU nano version (\d+)\.(\d+)\.(\d+) /m;
+    `nano --version 2>&1` =~ m/^ *GNU nano,? version (\d+)\.(\d+)\.(\d+)\s/m;
     $NANO_VERSION = int($3)+(int($2)<< 8)+(int($1)<<16);
     $NANO_VERSION or warn "Can't identify version of nano";
 ?>
