@@ -65,24 +65,41 @@ sub XdndEvent {
     $self->{XdndDisplay}->req('GetScreenSaver'); # Dummy event
 }
 
-# FIXME: implement type preferences -- prefer some types over others
+# Prefer URLs over plain text. This is the the more common case, and
+# we want to post-process URLs with a trailing space anyway.
 my %validtypes = ();
-$validtypes{$_} = 1 foreach qw(text/plain text/plain;charset=utf-8 STRING TEXT UTF8_STRING text/uri-list);
+$validtypes{$_} = 2 foreach qw(text/uri-list text/x-moz-url);
+$validtypes{$_} = 1 foreach qw(text/plain text/plain;charset=utf-8 STRING TEXT UTF8_STRING);
 sub choose_type {
     my $self = shift;
+    my $rv = '';
+    my $pri = -1;
     foreach my $typeid ( @_ ) {
         next unless $typeid;
         my $typename = $self->XGetAtomName($typeid);
         #print "Trying $typeid $typename\n"; 
-        return $typename if exists($validtypes{$typename}) and
-            $validtypes{$typename};
+        next if !exists($validtypes{$typename}) or
+            $pri >= $validtypes{$typename};
+        $rv = $typename;
+        $pri = $validtypes{$typename};
+        #print "Got $typename at $pri\n";
     }
-    return '';
+    return $rv;
 }
 
 sub transform {
     my ($type, $octets) = @_;
-    if ( $type =~ m/[-_]ur[il]$|(^|\/)ur[il][-_]/ ) {
+
+    # https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types#link
+    if ( $type =~ m/^(text\/x-moz-url|_NETSCAPE_URL)$/ ) {
+        # x-moz-url data contains the page title after a linebreak
+        $octets =~ s/\n[^\n]*(\n|$)/$1/g;
+    }
+    elsif ( $type eq 'text/uri-list' ) {
+        # URI lists can have comments
+        $octets =~ s/(\n|^)#[^\n]*(\n|$)/$2/g;
+    }
+    if ( $type =~ m/[-_]ur[il]$|(^|\/)ur[il][-_]/i ) {
         # For URLs or URL lists (newline separated), canonicalize
         # whitespace and append a space for repeated drags.
         $octets =~ s/\s+|(?<!\s)$/ /g;
