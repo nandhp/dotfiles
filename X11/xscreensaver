@@ -85,6 +85,7 @@ programs:								      \
 - GL: 				extrusion -root				    \n\
 				loop -root				    \n\
 				penetrate -root				    \n\
+				penetrate -root -smart			    \n\
 -				petri -root				    \n\
 				phosphor -root				    \n\
   GL: 				pulsar -root				    \n\
